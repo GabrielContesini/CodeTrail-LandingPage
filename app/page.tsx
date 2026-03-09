@@ -2,7 +2,6 @@ import Image from "next/image";
 import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
-  Blocks,
   BookOpenText,
   CheckCircle2,
   Download,
@@ -17,7 +16,6 @@ import {
   TabletSmartphone,
   TimerReset,
   TrendingUp,
-  Workflow,
 } from "lucide-react";
 
 import { HeroSmokeScene } from "./components/hero-smoke-scene";
@@ -338,8 +336,8 @@ export default function Home() {
           <div className="hero-visual-shell glass-panel" data-intro="hero-scene">
             <HeroSmokeScene />
 
-            <div className="hero-visual-grid">
-              <article className="hero-dashboard-card" data-float>
+            <div className="hero-visual-stack">
+              <article className="hero-showcase-card" data-float>
                 <div className="hero-card-header">
                   <div>
                     <p className="hero-caption">Painel tatico</p>
@@ -351,6 +349,12 @@ export default function Home() {
                   </div>
                 </div>
 
+                <p className="hero-showcase-copy">
+                  Um workspace unico para planejar trilhas, executar sessoes,
+                  capturar notas, revisar o que importa e ler o progresso sem
+                  perder tempo remontando a rotina.
+                </p>
+
                 <div className="hero-stat-grid">
                   {heroStats.map((item) => (
                     <article key={item.label} className="hero-stat-card" data-stat-item>
@@ -360,74 +364,42 @@ export default function Home() {
                     </article>
                   ))}
                 </div>
-
-                <div className="hero-dashboard-footer">
-                  <div className="hero-strip-card">
-                    <p className="hero-caption">Trilha prioritaria</p>
-                    <h3>Backend Python</h3>
-                    <span>Roadmap, modulos e skills em progresso continuo.</span>
-                  </div>
-                  <div className="hero-strip-card">
-                    <p className="hero-caption">Ritmo operacional</p>
-                    <ul>
-                      <li>
-                        <Workflow className="size-4" />
-                        sessoes e revisoes no mesmo loop
-                      </li>
-                      <li>
-                        <BookOpenText className="size-4" />
-                        cadernos ligados ao contexto
-                      </li>
-                      <li>
-                        <Blocks className="size-4" />
-                        projetos conectados a carreira
-                      </li>
-                    </ul>
-                  </div>
-                </div>
               </article>
 
-              <div className="hero-side-stack">
-                <article className="hero-signal-card" data-float>
-                  <div className="hero-signal-mark">
+              <div className="hero-showcase-footer">
+                <article className="hero-mini-panel" data-float>
+                  <p className="hero-caption">Signal loop</p>
+                  <div className="hero-mini-mark">
                     <Image
                       src={brandMark}
                       alt="CodeTrail signal"
-                      width={124}
-                      height={124}
+                      width={108}
+                      height={108}
                       priority
                     />
                   </div>
-                  <p className="hero-caption">Signal loop</p>
-                  <h3>Uma central para organizar estudo, pratica e evidencias.</h3>
                   <span>
-                    Menos caos visual, mais clareza de proxima acao, consistencia
-                    e progresso acumulado.
+                    Uma central para organizar estudo, pratica e evidencia sem
+                    virar uma colagem de apps.
                   </span>
                 </article>
 
-                <article className="hero-flow-card" data-float>
-                  <div className="hero-flow-row">
-                    <Orbit className="size-4.5" />
-                    <div>
-                      <strong>Planejar</strong>
-                      <span>Trilhas, metas e modulos do jeito certo.</span>
-                    </div>
-                  </div>
-                  <div className="hero-flow-row">
-                    <TimerReset className="size-4.5" />
-                    <div>
-                      <strong>Executar</strong>
-                      <span>Sessoes, templates e revisoes sem atrito.</span>
-                    </div>
-                  </div>
-                  <div className="hero-flow-row">
-                    <TrendingUp className="size-4.5" />
-                    <div>
-                      <strong>Ler a evolucao</strong>
-                      <span>Analytics, streak e consistencia visiveis.</span>
-                    </div>
-                  </div>
+                <article className="hero-mini-panel" data-float>
+                  <p className="hero-caption">Fluxo vivo</p>
+                  <ul>
+                    <li>
+                      <Orbit className="size-4.5" />
+                      trilhas, metas e modulos no mesmo mapa
+                    </li>
+                    <li>
+                      <TimerReset className="size-4.5" />
+                      sessoes, templates e revisoes sem atrito
+                    </li>
+                    <li>
+                      <TrendingUp className="size-4.5" />
+                      progresso e consistencia visiveis toda semana
+                    </li>
+                  </ul>
                 </article>
               </div>
             </div>
