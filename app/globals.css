@@ -11,6 +11,7 @@
   --secondary: #22d3ee;
   --success: #22c55e;
   --warning: #f59e0b;
+  --danger: #ef4444;
   --shadow: rgba(3, 10, 20, 0.42);
 }
 
@@ -302,6 +303,18 @@ a {
   min-height: 580px;
   border-radius: 36px;
   padding: 24px;
+}
+
+.hero-visual-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(79, 140, 255, 0.14) 0%,
+    rgba(34, 211, 238, 0.08) 100%
+  );
+  pointer-events: none;
 }
 
 .hero-canvas-shell {
