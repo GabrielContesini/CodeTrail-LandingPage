@@ -23,7 +23,7 @@ import { LandingMotion } from "./components/landing-motion";
 
 const mobileRepositoryUrl = "https://github.com/GabrielContesini/CodeTrail";
 const windowsDownloadUrl = "/download/windows";
-const brandMark = "/design/CodeTrailMainIcon.png";
+const brandMark = "/design/CodeTrailMainIconCore.png";
 
 type Feature = {
   icon: LucideIcon;

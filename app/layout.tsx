@@ -16,6 +16,11 @@ export const metadata: Metadata = {
   title: "CodeTrail | Study OS for IT careers",
   description:
     "Planejamento de estudos para TI com trilhas, sessoes, revisoes, projetos e uma versao Windows pronta para download.",
+  icons: {
+    icon: "/design/CodeTrailMainIconCore.png",
+    apple: "/design/CodeTrailMainIconCore.png",
+    shortcut: "/design/CodeTrailMainIconCore.png",
+  },
 };
 
 export default function RootLayout({
