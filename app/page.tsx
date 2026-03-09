@@ -2,36 +2,30 @@ import Image from "next/image";
 import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
-  BrainCircuit,
+  Blocks,
+  BookOpenText,
   CheckCircle2,
-  Clock3,
   Download,
-  FolderKanban,
-  Laptop,
-  Layers3,
+  FolderGit2,
   LayoutDashboard,
-  MonitorUp,
+  MonitorCog,
   MoveRight,
+  Orbit,
+  Radar,
   ShieldCheck,
   Sparkles,
-  TabletSmartphone,
   Target,
+  TabletSmartphone,
   TimerReset,
+  TrendingUp,
   Workflow,
 } from "lucide-react";
 
 import { HeroSmokeScene } from "./components/hero-smoke-scene";
 import { LandingMotion } from "./components/landing-motion";
 
-const mobileRepositoryUrl =
-  "https://github.com/GabrielContesini/CodeTrail";
+const mobileRepositoryUrl = "https://github.com/GabrielContesini/CodeTrail";
 const windowsDownloadUrl = "/download/windows";
-
-type Metric = {
-  value: string;
-  label: string;
-  detail: string;
-};
 
 type Feature = {
   icon: LucideIcon;
@@ -39,595 +33,475 @@ type Feature = {
   description: string;
 };
 
+type PlatformCard = {
+  icon: LucideIcon;
+  title: string;
+  summary: string;
+  note: string;
+  href: string;
+  cta: string;
+  external?: boolean;
+};
+
 type RoadmapItem = {
   version: string;
   title: string;
-  status: string;
+  phase: string;
   description: string;
   bullets: string[];
 };
 
-const metrics: Metric[] = [
+const heroStats = [
   {
-    value: "2 plataformas",
-    label: "Windows pronto",
-    detail: "Desktop e tablet Android orbitando a mesma visao de produto.",
+    label: "Sessao orientada",
+    value: "2h 40m",
+    detail: "Teoria, pratica, projeto e revisao no mesmo fluxo.",
   },
   {
-    value: "7 trilhas",
-    label: "Carreiras de TI",
-    detail: "Data, backend, frontend, full stack, DevOps e analytics em uma base unica.",
+    label: "Consistencia",
+    value: "16 dias",
+    detail: "Ritmo visivel sem depender de memoria ou improviso.",
   },
   {
-    value: "Offline-first",
-    label: "Uso continuo",
-    detail: "A rotina continua fluindo mesmo quando seu contexto muda entre mesa, casa e estudo em movimento.",
-  },
-  {
-    value: "v1.1 entregue",
-    label: "Roadmap vivo",
-    detail: "Evolucao de produto declarada em ciclos, nao em promessas vagas.",
+    label: "Trilha viva",
+    value: "68%",
+    detail: "Roadmap, progresso e proximos passos dentro do mesmo workspace.",
   },
 ];
 
-const features: Feature[] = [
+const productFeatures: Feature[] = [
   {
     icon: LayoutDashboard,
-    title: "Painel de estudo com clareza",
+    title: "Workspace de estudo realmente centralizado",
     description:
-      "Resumo do dia, progresso da trilha, proximas sessoes e tarefas em uma visao limpa e acionavel.",
+      "Trilhas, sessoes, tarefas, revisoes, projetos e analytics organizados como um sistema unico.",
   },
   {
     icon: TimerReset,
-    title: "Sessoes cronometradas de verdade",
+    title: "Execucao com foco real",
     description:
-      "Teoria, pratica, revisao, projeto e exercicios com historico, produtividade e rastreio consistente.",
+      "Cronometro, templates, produtividade e retomada rapida para transformar intencao em estudo executado.",
   },
   {
-    icon: BrainCircuit,
-    title: "Revisoes contra o esquecimento",
+    icon: BookOpenText,
+    title: "Notas com contexto",
     description:
-      "Ciclos D+1, D+7, D+15 e D+30 para transformar conteudo em memoria util e retomada facil.",
+      "Cadernos, paginas e resumos ligados ao que voce estuda, sem virar um arquivo morto de texto solto.",
   },
   {
-    icon: FolderKanban,
-    title: "Projetos praticos integrados",
+    icon: FolderGit2,
+    title: "Projetos praticos dentro da rotina",
     description:
-      "Escopo, etapas, progresso e links de GitHub conectados a rotina real de estudo.",
-  },
-  {
-    icon: Workflow,
-    title: "Trilhas por carreira",
-    description:
-      "Roadmaps iniciais para Data Engineer, Backend, Front-end React, Full Stack, DevOps e BI.",
+      "Escopo, etapas, progresso e GitHub conectados ao caminho da carreira e nao isolados em outra ferramenta.",
   },
   {
     icon: ShieldCheck,
-    title: "Offline-first sem drama",
+    title: "Offline-first e confiavel",
     description:
-      "Continue estudando com fluidez, sem perder a linha de raciocinio quando a conexao oscilar.",
+      "A rotina continua funcionando mesmo quando a conexao falha, sem te arrancar do estado de foco.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Evolucao visivel",
+    description:
+      "Voce enxerga consistencia, carga semanal e progresso por skill sem depender de feeling.",
+  },
+];
+
+const platformCards: PlatformCard[] = [
+  {
+    icon: MonitorCog,
+    title: "Windows para escritorio de estudo",
+    summary:
+      "Instale o workspace de desktop, organize cadernos, acompanhe trilhas e receba atualizacoes por release.",
+    note: "Ja pronto para distribuicao e uso diario.",
+    href: windowsDownloadUrl,
+    cta: "Baixar versao Windows",
+  },
+  {
+    icon: TabletSmartphone,
+    title: "Mobile para tablet Android",
+    summary:
+      "Uma versao pensada para consulta constante, revisao e acompanhamento do plano em movimento.",
+    note: "Feita para tablet, com leitura ampla e fluxo de estudo continuo.",
+    href: mobileRepositoryUrl,
+    cta: "Conhecer versao mobile",
+    external: true,
   },
 ];
 
 const roadmap: RoadmapItem[] = [
   {
     version: "v1.1",
-    title: "Confiabilidade operacional",
-    status: "Entregue",
+    title: "Base operacional entregue",
+    phase: "Concluida",
     description:
-      "A base saiu do estagio de prototipo e virou sistema usavel em rotina real.",
+      "O sistema saiu da fase de prototipo e passou a operar com consistencia entre produto, distribuicao e observabilidade.",
     bullets: [
-      "Diagnostico de sincronizacao",
-      "Retry manual e automatico",
-      "CRUD principal testado",
+      "Desktop Windows instalavel",
+      "Command Center operacional",
+      "Fluxo offline-first estavel",
     ],
   },
   {
     version: "v1.2",
-    title: "Notas e produtividade",
-    status: "Proxima",
+    title: "Produtividade e profundidade",
+    phase: "Em evolucao",
     description:
-      "A proxima camada reforca captura de conhecimento, quick actions e metas mais inteligentes.",
+      "Mais densidade no fluxo de estudo: notas melhores, metas vivas, templates e automacoes de rotina.",
     bullets: [
-      "Notas mais fortes",
-      "Importacao manual de arquivos",
-      "Templates e quick actions",
+      "Notas em formato de caderno",
+      "Metas semanais ajustaveis",
+      "Templates persistidos de sessao",
     ],
   },
   {
     version: "v1.3",
-    title: "Qualidade de producao",
-    status: "Em preparacao",
+    title: "Experiencia mais refinada",
+    phase: "Planejada",
     description:
-      "Refino de erros, conflitos de sincronizacao, estados de loading e performance.",
+      "Camada de polimento visual, consistencia operacional e leitura ainda mais clara do progresso.",
     bullets: [
-      "Logs estruturados",
-      "Estados vazios melhores",
-      "Performance em listas e analytics",
+      "Analytics mais fortes",
+      "Erros e estados mais elegantes",
+      "Mais fluidez na navegacao",
     ],
   },
   {
     version: "v2.0",
-    title: "Distribuicao madura",
-    status: "Visao",
+    title: "Produto maduro para crescimento",
+    phase: "Visao",
     description:
-      "Mais polimento de entrega, changelog melhor e base pronta para integracoes futuras.",
+      "Distribuicao mais forte, evolucao guiada por usuarios reais e base pronta para proximas integracoes.",
     bullets: [
-      "Distribuicao Android assinada",
-      "Pipeline e changelog mais solidos",
-      "Base para colaboracao futura",
+      "Roadmap expandido",
+      "Mais automacao operacional",
+      "Evolucao guiada por uso real",
     ],
-  },
-];
-
-const platformPillars = [
-  {
-    id: "windows",
-    icon: MonitorUp,
-    title: "Windows para uso diario",
-    description:
-      "Baixe o instalador, organize projetos, acompanhe trilhas e receba atualizacoes pelo fluxo de release.",
-    ctaLabel: "Baixar versao Windows",
-    href: windowsDownloadUrl,
-    note: "Instalador pronto, com foco em produtividade de desktop.",
-  },
-  {
-    id: "mobile",
-    icon: TabletSmartphone,
-    title: "Mobile para estudar em movimento",
-    description:
-      "A versao Android foi pensada para tablet, landscape e consulta constante no fluxo de estudo.",
-    ctaLabel: "Conhecer versao mobile",
-    href: mobileRepositoryUrl,
-    note: "Fluxo mobile-first para planejar, revisar e acompanhar progresso.",
-  },
-];
-
-const workflowSteps = [
-  {
-    step: "01",
-    title: "Escolha sua trilha",
-    description:
-      "Comece por um caminho concreto e troque ambicao vaga por direcao mensuravel.",
-  },
-  {
-    step: "02",
-    title: "Execute com foco",
-    description:
-      "Rode sessoes, conclua modulos e distribua sua energia entre teoria, pratica e projeto.",
-  },
-  {
-    step: "03",
-    title: "Evolua com evidencia",
-    description:
-      "Veja revisoes, analytics, projetos e consistencia para entender se voce esta avancando de verdade.",
   },
 ];
 
 const faq = [
   {
-    question: "O CodeTrail ja esta pronto para uso?",
+    question: "O CodeTrail ja pode ser usado agora?",
     answer:
-      "Sim. A versao Windows esta pronta para instalacao e a versao mobile continua evoluindo com foco em tablet Android.",
+      "Sim. A versao Windows ja esta pronta para instalacao e a versao mobile segue evoluindo com o mesmo DNA do produto.",
   },
   {
-    question: "Funciona offline?",
+    question: "Ele foi feito para quem?",
     answer:
-      "Sim. O produto foi desenhado para manter sua rotina estavel, inclusive quando a conexao nao estiver perfeita.",
+      "Para quem estuda tecnologia com seriedade e quer uma rotina clara, mensuravel e dificil de abandonar.",
   },
   {
-    question: "Para quem ele foi pensado?",
+    question: "Como acompanho a evolucao do produto?",
     answer:
-      "Para quem estuda tecnologia com seriedade e quer parar de viver entre notas soltas, timers aleatorios e checklists desconectadas.",
+      "Pela propria landing, pelas releases e pelo roadmap vivo que organiza as proximas fases do sistema.",
   },
 ];
 
-function SectionLabel({
+function SectionKicker({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-[#7cffb2]">
+    <span className="section-kicker">
       <Sparkles className="size-3.5" />
       {children}
     </span>
   );
 }
 
-function FeatureCard({ icon: Icon, title, description }: Readonly<Feature>) {
+function FeatureCard({
+  icon: Icon,
+  title,
+  description,
+}: Readonly<Feature>) {
   return (
-    <article className="glass-panel rounded-[28px] p-6 transition-transform duration-300 hover:-translate-y-1">
-      <div className="mb-5 inline-flex rounded-2xl border border-white/10 bg-white/[0.08] p-3 text-[#5ea1ff]">
+    <article className="feature-card" data-float>
+      <div className="feature-icon">
         <Icon className="size-5" />
       </div>
-      <h3 className="font-display text-xl font-semibold text-white">{title}</h3>
-      <p className="mt-3 text-sm leading-7 text-[#9fb0c3]">{description}</p>
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </article>
+  );
+}
+
+function RoadmapCard({
+  version,
+  title,
+  phase,
+  description,
+  bullets,
+}: Readonly<RoadmapItem>) {
+  return (
+    <article className="roadmap-card" data-float>
+      <div className="roadmap-topline">
+        <span>{version}</span>
+        <strong>{phase}</strong>
+      </div>
+      <h3>{title}</h3>
+      <p>{description}</p>
+      <ul>
+        {bullets.map((bullet) => (
+          <li key={bullet}>
+            <CheckCircle2 className="size-4" />
+            <span>{bullet}</span>
+          </li>
+        ))}
+      </ul>
     </article>
   );
 }
 
 export default function Home() {
   return (
-    <main className="relative overflow-hidden">
+    <main className="landing-root">
       <LandingMotion />
-      <div className="mx-auto flex min-h-screen w-full max-w-[1440px] flex-col px-5 pb-16 pt-5 sm:px-8 lg:px-10">
-        <header
-          className="glass-panel glow-ring sticky top-4 z-30 rounded-[30px] px-5 py-4 sm:px-6"
-          data-reveal
-        >
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="brand-mark">
-                <Image
-                  src="/design/app_icon.png"
-                  alt="CodeTrail"
-                  width={40}
-                  height={40}
-                  priority
-                />
-              </div>
-              <div>
-                <p className="font-display text-lg font-semibold text-white">
-                  CodeTrail
-                </p>
-                <p className="text-sm text-[#bfe5de]">
-                  Study OS para carreiras em tecnologia
-                </p>
-              </div>
+      <div className="page-curtain" data-page-curtain />
+
+      <div className="landing-shell">
+        <header className="landing-nav-shell glass-panel" data-intro="nav">
+          <div className="landing-brand">
+            <div className="landing-brand-mark">
+              <Image
+                src="/design/CodeTrailMainIcon.png"
+                alt="CodeTrail"
+                width={44}
+                height={44}
+                priority
+              />
             </div>
-            <div className="flex flex-col gap-3 lg:items-end">
-              <nav className="flex flex-wrap items-center gap-2 text-sm text-[#c9e2dd]">
-              <a
-                className="rounded-full px-3 py-2 transition hover:bg-white/[0.08] hover:text-white"
-                href="#produto"
-              >
-                Produto
-              </a>
-              <a
-                className="rounded-full px-3 py-2 transition hover:bg-white/[0.08] hover:text-white"
-                href="#plataformas"
-              >
-                Plataformas
-              </a>
-              <a
-                className="rounded-full px-3 py-2 transition hover:bg-white/[0.08] hover:text-white"
-                href="#roadmap"
-              >
-                Roadmap
-              </a>
-              <a
-                className="rounded-full px-3 py-2 transition hover:bg-white/[0.08] hover:text-white"
-                href="#download"
-              >
-                Download
-              </a>
-              </nav>
-              <a
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#5ef2d5]/25 bg-[linear-gradient(135deg,rgba(28,239,227,0.2),rgba(6,31,31,0.96))] px-4 py-2 text-sm font-semibold text-white transition hover:border-[#84ffe1]/45 hover:bg-[linear-gradient(135deg,rgba(28,239,227,0.3),rgba(8,38,39,1))]"
-                href={windowsDownloadUrl}
-              >
-                <Download className="size-4" />
-                Baixar Windows
-              </a>
+            <div>
+              <p className="landing-brand-title">CodeTrail</p>
+              <p className="landing-brand-subtitle">
+                Study OS para carreiras em tecnologia
+              </p>
             </div>
           </div>
+
+          <nav className="landing-nav">
+            <a href="#produto" data-section-link>
+              Produto
+            </a>
+            <a href="#plataformas" data-section-link>
+              Plataformas
+            </a>
+            <a href="#roadmap" data-section-link>
+              Roadmap
+            </a>
+            <a href="#download" data-section-link>
+              Download
+            </a>
+          </nav>
         </header>
 
-        <section
-          className="relative grid gap-8 pb-20 pt-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(360px,0.92fr)] lg:items-end lg:pt-16"
-          data-reveal
-        >
-          <div className="relative" data-parallax>
-            <SectionLabel>Windows disponivel agora · Mobile em expansao</SectionLabel>
-            <h1 className="mt-7 max-w-4xl font-display text-5xl font-semibold leading-[0.98] tracking-[-0.04em] text-white sm:text-6xl xl:text-[5.8rem]">
-              O lugar onde sua rotina de estudos em TI finalmente faz sentido.
+        <section className="hero-shell" data-section>
+          <div className="hero-copy" data-intro="hero-copy">
+            <SectionKicker>Windows disponivel agora · mobile para tablet</SectionKicker>
+
+            <h1>
+              O sistema que transforma sua rotina de estudos em execucao
+              organizada.
             </h1>
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-[#b6c5d4] sm:text-xl">
-              Planeje trilhas, rode sessoes, acompanhe revisoes, execute projetos
-              praticos e veja seu progresso sem se perder em dezenas de apps.
-              CodeTrail foi desenhado para quem quer evolucao real, nao so
-              intencao.
+
+            <p>
+              CodeTrail junta trilhas, sessoes, revisoes, notas, tarefas e
+              projetos em um workspace com cara de produto de verdade. Menos
+              caos, mais clareza, mais evidencia de evolucao.
             </p>
-            <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-              <a
-                className="cta-primary"
-                href={windowsDownloadUrl}
-              >
+
+            <div className="hero-actions">
+              <a className="cta-primary" href={windowsDownloadUrl}>
                 <Download className="size-4.5" />
                 Baixar versao Windows
               </a>
               <a
                 className="cta-secondary"
                 href="#roadmap"
+                data-section-link
               >
                 Ver roadmap do produto
                 <ArrowRight className="size-4.5" />
               </a>
             </div>
-            <div className="mt-10 flex flex-wrap gap-3 text-sm text-[#8ea3bc]">
-              <span className="rounded-full border border-white/10 px-3 py-2">
-                Offline-first
-              </span>
-              <span className="rounded-full border border-white/10 px-3 py-2">
-                Windows Installer
-              </span>
-              <span className="rounded-full border border-white/10 px-3 py-2">
-                Android tablet
-              </span>
+
+            <div className="hero-tags">
+              <span>Offline-first</span>
+              <span>Windows workspace</span>
+              <span>Android tablet</span>
+              <span>Roadmap vivo</span>
             </div>
           </div>
 
-          <div className="relative" data-parallax>
-            <div className="glass-panel glow-ring hero-stage relative overflow-hidden rounded-[38px] p-5 sm:p-6">
-              <HeroSmokeScene />
-              <div className="hero-scene-vignette" />
-              <div className="relative z-10 grid gap-4 sm:grid-cols-[1.16fr_0.84fr]">
-                <div className="rounded-[28px] border border-white/8 bg-[#08111d]/86 p-5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.26em] text-[#7cffb2]">
-                        Painel tatico
-                      </p>
-                      <h2 className="mt-3 font-display text-2xl font-semibold text-white">
-                        Seu estudo deixa de ser solto e vira sistema.
-                      </h2>
-                    </div>
-                    <div className="rounded-2xl border border-white/10 bg-white/6 p-3 text-[#ffd166]">
-                      <Target className="size-6" />
-                    </div>
-                  </div>
-                  <div className="mt-6 grid gap-3 text-sm text-[#dce6f2] sm:grid-cols-2">
-                    <div className="rounded-3xl border border-white/8 bg-white/6 p-4">
-                      <p className="text-[0.72rem] uppercase tracking-[0.22em] text-[#91a7c0]">
-                        Hoje
-                      </p>
-                      <p className="mt-3 text-3xl font-semibold">2h 40m</p>
-                      <p className="mt-2 text-[#9fb0c3]">
-                        Sessao pratica de backend e revisao de SQL agendadas.
-                      </p>
-                    </div>
-                    <div className="rounded-3xl border border-white/8 bg-white/6 p-4">
-                      <p className="text-[0.72rem] uppercase tracking-[0.22em] text-[#91a7c0]">
-                        Streak
-                      </p>
-                      <p className="mt-3 text-3xl font-semibold">16 dias</p>
-                      <p className="mt-2 text-[#9fb0c3]">
-                        Consistencia sustentada sem depender de motivacao aleatoria.
-                      </p>
-                    </div>
+          <div className="hero-stage-shell glass-panel" data-intro="hero-scene">
+            <HeroSmokeScene />
+            <div className="hero-stage-grid">
+              <div className="hero-primary-panel" data-float>
+                <div className="hero-panel-topline">
+                  <SectionKicker>Orbito de execucao</SectionKicker>
+                  <div className="hero-mini-badge">
+                    <Target className="size-4" />
+                    ritmo ativo
                   </div>
                 </div>
-                <div className="space-y-4">
-                  <div className="hero-signal-card">
-                    <div className="hero-signal-core">
-                      <div className="hero-signal-ring hero-signal-ring--outer" />
-                      <div className="hero-signal-ring hero-signal-ring--inner" />
-                      <div className="hero-signal-mark">
-                        <Image
-                          src="/design/app_icon.png"
-                          alt="CodeTrail signal"
-                          width={84}
-                          height={84}
-                          className="hero-signal-logo"
-                        />
-                      </div>
-                    </div>
-                    <div className="hero-signal-copy">
-                      <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#7cffb2]">
-                        Signal loop
-                      </p>
-                      <p className="mt-1 text-sm text-white">
-                        Workspace vivo, consistencia visivel e estudo em fluxo.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="rounded-[28px] border border-white/8 bg-[#0b1625]/88 p-5">
-                    <p className="text-xs uppercase tracking-[0.24em] text-[#91a7c0]">
-                      Trilha ativa
-                    </p>
-                    <p className="mt-3 font-display text-2xl font-semibold text-white">
-                      Backend Python
-                    </p>
-                    <div className="mt-5 h-2 rounded-full bg-white/[0.08]">
-                      <div className="h-2 w-[68%] rounded-full bg-gradient-to-r from-[#5ea1ff] to-[#7cffb2]" />
-                    </div>
-                    <p className="mt-3 text-sm text-[#9fb0c3]">
-                      68% do plano concluido, com modulo pratico em andamento.
+
+                <div className="hero-panel-body">
+                  <div className="hero-headline-block">
+                    <p className="hero-caption">Workspace vivo</p>
+                    <h2>Planejamento, estudo e evidencia dentro do mesmo loop.</h2>
+                    <p className="hero-support">
+                      Uma interface para carregar a trilha, rodar o foco, revisar
+                      o que importa e manter o progresso visivel.
                     </p>
                   </div>
-                  <div className="rounded-[28px] border border-white/8 bg-[#0b1625]/88 p-5">
-                    <p className="text-xs uppercase tracking-[0.24em] text-[#91a7c0]">
-                      Projeto em foco
-                    </p>
-                    <p className="mt-3 font-display text-2xl font-semibold text-white">
-                      API de portfolio
-                    </p>
-                    <div className="mt-5 space-y-3 text-sm text-[#c0cfdd]">
-                      <div className="flex items-center gap-3">
-                        <CheckCircle2 className="size-4 text-[#7cffb2]" />
-                        Modelagem e auth concluidos
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Clock3 className="size-4 text-[#ffd166]" />
-                        Deploy e observabilidade em execucao
-                      </div>
-                    </div>
+
+                  <div className="hero-stat-grid">
+                    {heroStats.map((item) => (
+                      <article key={item.label} className="hero-stat-card" data-stat-item>
+                        <p>{item.label}</p>
+                        <strong>{item.value}</strong>
+                        <span>{item.detail}</span>
+                      </article>
+                    ))}
                   </div>
                 </div>
+              </div>
+
+              <div className="hero-side-column">
+                <article className="hero-icon-card" data-float>
+                  <div className="hero-orbit-core">
+                    <div className="hero-orbit-ring hero-orbit-ring--outer" />
+                    <div className="hero-orbit-ring hero-orbit-ring--inner" />
+                    <div className="hero-orbit-mark">
+                      <Image
+                        src="/design/CodeTrailMainIcon.png"
+                        alt="CodeTrail signal"
+                        width={122}
+                        height={122}
+                        priority
+                      />
+                    </div>
+                    <span className="hero-orbit-chip hero-orbit-chip--top">
+                      <Orbit className="size-3.5" />
+                      trilha
+                    </span>
+                    <span className="hero-orbit-chip hero-orbit-chip--right">
+                      <Radar className="size-3.5" />
+                      analytics
+                    </span>
+                    <span className="hero-orbit-chip hero-orbit-chip--bottom">
+                      <Blocks className="size-3.5" />
+                      projetos
+                    </span>
+                  </div>
+                </article>
+
+                <article className="hero-context-card" data-float>
+                  <p className="hero-caption">Signal loop</p>
+                  <h3>Rotina em movimento, nao estudo solto.</h3>
+                  <ul>
+                    <li>
+                      <Workflow className="size-4" />
+                      trilhas ligadas a progresso real
+                    </li>
+                    <li>
+                      <BookOpenText className="size-4" />
+                      cadernos com contexto
+                    </li>
+                    <li>
+                      <MonitorCog className="size-4" />
+                      desktop pronto para uso diario
+                    </li>
+                  </ul>
+                </article>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4" data-reveal>
-          {metrics.map((metric) => (
-            <article
-              key={metric.label}
-              className="glass-panel rounded-[28px] p-5"
-            >
-              <p className="text-xs uppercase tracking-[0.26em] text-[#91a7c0]">
-                {metric.label}
-              </p>
-              <p className="mt-4 font-display text-3xl font-semibold text-white">
-                {metric.value}
-              </p>
-              <p className="mt-3 text-sm leading-7 text-[#9fb0c3]">
-                {metric.detail}
-              </p>
-            </article>
-          ))}
+        <section className="story-strip" data-section>
+          <article className="story-card" data-float>
+            <p>01</p>
+            <h3>Escolha a carreira</h3>
+            <span>
+              Pare de estudar sem mapa e entre em uma trilha com modulo, skill e
+              progresso visivel.
+            </span>
+          </article>
+          <article className="story-card" data-float>
+            <p>02</p>
+            <h3>Execute em ritmo</h3>
+            <span>
+              Sessoes, templates, revisoes e projetos praticos puxando a rotina
+              para frente.
+            </span>
+          </article>
+          <article className="story-card" data-float>
+            <p>03</p>
+            <h3>Leia a evolucao</h3>
+            <span>
+              Analytics, consistencia e backlog transformando estudo em feedback
+              claro.
+            </span>
+          </article>
         </section>
 
-        <section id="produto" className="pt-24" data-reveal>
-          <div className="max-w-3xl">
-            <SectionLabel>Produto</SectionLabel>
-            <h2 className="mt-6 font-display text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl">
-              Um sistema para estudar tecnologia com ritmo, clareza e execucao.
-            </h2>
-            <p className="mt-5 text-lg leading-8 text-[#a9bacd]">
-              CodeTrail une o que normalmente fica espalhado entre agenda,
-              notas, cronometro, checklist e repositorios. O resultado e uma
-              rotina mais limpa, mensuravel e dificil de abandonar.
+        <section className="content-section" data-section id="produto">
+          <div className="section-heading">
+            <div>
+              <SectionKicker>Produto</SectionKicker>
+              <h2>Um workspace para quem quer estudar tecnologia como sistema.</h2>
+            </div>
+            <p>
+              O produto foi desenhado para reduzir atrito entre intencao,
+              execucao e revisao. Nao e um monte de utilitarios soltos; e uma
+              rotina coerente.
             </p>
           </div>
-          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {features.map((feature) => (
+
+          <div className="feature-grid">
+            {productFeatures.map((feature) => (
               <FeatureCard key={feature.title} {...feature} />
             ))}
           </div>
         </section>
 
-        <section className="pt-24" data-reveal>
-          <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
-            <article className="glass-panel rounded-[32px] p-6 lg:p-8">
-              <SectionLabel>Fluxo de uso</SectionLabel>
-              <h2 className="mt-6 font-display text-4xl font-semibold tracking-[-0.04em] text-white">
-                Da meta ate a evidencia de evolucao.
-              </h2>
-              <div className="mt-8 space-y-5">
-                {workflowSteps.map((item) => (
-                  <div
-                    key={item.step}
-                    className="rounded-[28px] border border-white/8 bg-white/5 p-5"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#f5f7fa] text-sm font-bold text-[#07111f]">
-                        {item.step}
-                      </div>
-                      <div>
-                        <h3 className="font-display text-xl font-semibold text-white">
-                          {item.title}
-                        </h3>
-                        <p className="mt-2 text-sm leading-7 text-[#9fb0c3]">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </article>
-
-            <article className="glass-panel rounded-[32px] p-6 lg:p-8">
-              <SectionLabel>Por que chama atencao</SectionLabel>
-              <h2 className="mt-6 font-display text-4xl font-semibold tracking-[-0.04em] text-white">
-                Porque ele organiza a ambicao em movimento diario.
-              </h2>
-              <div className="mt-8 grid gap-4 sm:grid-cols-2">
-                {[
-                  {
-                    icon: Target,
-                    title: "Meta principal visivel",
-                    text: "Nada de estudar no escuro: objetivo, prazo e foco principal aparecem logo no fluxo.",
-                  },
-                  {
-                    icon: Laptop,
-                    title: "Windows pronto para usar",
-                    text: "Instale, abra e acompanhe a evolucao da sua rotina sem depender de configuracao complexa.",
-                  },
-                  {
-                    icon: TabletSmartphone,
-                    title: "Mobile pensado para tablet",
-                    text: "Landscape, leitura confortavel e navegacao feita para estudo continuo em Android.",
-                  },
-                  {
-                    icon: Layers3,
-                    title: "Roadmap que continua vivo",
-                    text: "O produto nao para na landing: as proximas fases ja estao declaradas e visiveis.",
-                  },
-                ].map(({ icon: Icon, title, text }) => (
-                  <div
-                    key={title}
-                    className="rounded-[28px] border border-white/8 bg-[#09131f]/88 p-5"
-                  >
-                    <div className="inline-flex rounded-2xl border border-white/10 bg-white/[0.07] p-3 text-[#7cffb2]">
-                      <Icon className="size-5" />
-                    </div>
-                    <h3 className="mt-4 font-display text-xl font-semibold text-white">
-                      {title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-7 text-[#9fb0c3]">
-                      {text}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </article>
-          </div>
-        </section>
-
-        <section id="plataformas" className="pt-24" data-reveal>
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-2xl">
-              <SectionLabel>Plataformas</SectionLabel>
-              <h2 className="mt-6 font-display text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl">
-                Um produto, dois contextos: mesa de trabalho e estudo em movimento.
-              </h2>
+        <section className="content-section" data-section id="plataformas">
+          <div className="section-heading">
+            <div>
+              <SectionKicker>Plataformas</SectionKicker>
+              <h2>Do escritorio ao tablet, a mesma logica de produto.</h2>
             </div>
-            <p className="max-w-xl text-base leading-7 text-[#9fb0c3]">
-              A versao Windows esta pronta para distribuicao. A versao mobile
-              continua sendo a face mais focada em tablet Android, com o mesmo
-              DNA de produtividade e clareza.
+            <p>
+              A versao Windows entrega profundidade de workspace. A versao mobile
+              acompanha a rotina em tablet Android sem perder leitura, contexto
+              nem continuidade.
             </p>
           </div>
-          <div className="mt-10 grid gap-5 lg:grid-cols-2">
-            {platformPillars.map((platform) => {
+
+          <div className="platform-grid">
+            {platformCards.map((platform) => {
               const Icon = platform.icon;
               return (
-                <article
-                  id={platform.id}
-                  key={platform.id}
-                  className="glass-panel rounded-[32px] p-6 sm:p-8"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="inline-flex rounded-2xl border border-white/10 bg-white/6 p-3 text-[#5ea1ff]">
-                      <Icon className="size-6" />
+                <article key={platform.title} className="platform-card" data-float>
+                  <div className="platform-header">
+                    <div className="feature-icon">
+                      <Icon className="size-5" />
                     </div>
-                    <span className="rounded-full border border-white/10 px-3 py-2 text-xs uppercase tracking-[0.24em] text-[#91a7c0]">
-                      {platform.id === "windows" ? "Disponivel" : "Em destaque"}
-                    </span>
+                    <span>{platform.external ? "Mobile" : "Windows"}</span>
                   </div>
-                  <h3 className="mt-6 font-display text-3xl font-semibold text-white">
-                    {platform.title}
-                  </h3>
-                  <p className="mt-4 text-base leading-8 text-[#a9bacd]">
-                    {platform.description}
-                  </p>
-                  <p className="mt-4 text-sm leading-7 text-[#7cffb2]">
-                    {platform.note}
-                  </p>
+                  <h3>{platform.title}</h3>
+                  <p>{platform.summary}</p>
+                  <small>{platform.note}</small>
                   <a
-                    className="mt-7 inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/6 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-                    href={
-                      platform.id === "windows"
-                        ? windowsDownloadUrl
-                        : platform.href
-                    }
-                    target={platform.id === "windows" ? undefined : "_blank"}
-                    rel={platform.id === "windows" ? undefined : "noreferrer"}
+                    href={platform.href}
+                    className="platform-cta"
+                    target={platform.external ? "_blank" : undefined}
+                    rel={platform.external ? "noreferrer" : undefined}
                   >
-                    {platform.ctaLabel}
+                    {platform.cta}
                     <MoveRight className="size-4.5" />
                   </a>
                 </article>
@@ -636,123 +510,73 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="roadmap" className="pt-24" data-reveal>
-          <div className="max-w-3xl">
-            <SectionLabel>Roadmap</SectionLabel>
-            <h2 className="mt-6 font-display text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl">
-              O produto nao promete em abstrato. Ele mostra para onde esta indo.
-            </h2>
-            <p className="mt-5 text-lg leading-8 text-[#a9bacd]">
-              Cada release foi pensada para aumentar confiabilidade, profundidade
-              do estudo e maturidade de distribuicao sem sacrificar clareza.
+        <section className="content-section" data-section id="roadmap">
+          <div className="section-heading">
+            <div>
+              <SectionKicker>Roadmap</SectionKicker>
+              <h2>O produto mostra para onde esta indo e por que cada fase existe.</h2>
+            </div>
+            <p>
+              Cada entrega reforca confiabilidade, profundidade de uso e maturidade
+              do ecossistema sem perder o foco no estudo real.
             </p>
           </div>
-          <div className="mt-12 grid gap-6 xl:grid-cols-4">
+
+          <div className="roadmap-grid">
             {roadmap.map((item) => (
-              <article
-                key={item.version}
-                className="glass-panel relative rounded-[32px] p-6"
+              <RoadmapCard key={item.version} {...item} />
+            ))}
+          </div>
+        </section>
+
+        <section className="download-shell glass-panel" data-section id="download">
+          <div className="download-copy">
+            <SectionKicker>Download</SectionKicker>
+            <h2>Entre agora no ecossistema e acompanhe o crescimento do produto desde cedo.</h2>
+            <p>
+              Se voce quer um sistema para estudar TI com clareza, ritmo e leitura
+              real de progresso, esse e o melhor ponto para entrar e testar.
+            </p>
+            <div className="hero-actions">
+              <a className="cta-primary" href={windowsDownloadUrl}>
+                <Download className="size-4.5" />
+                Abrir download Windows
+              </a>
+              <a
+                className="cta-secondary"
+                href={mobileRepositoryUrl}
+                target="_blank"
+                rel="noreferrer"
               >
-                <div className="timeline-beam absolute left-6 top-0 h-full w-px opacity-70 xl:hidden" />
-                <div className="relative">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-3 py-2 text-xs uppercase tracking-[0.22em] text-[#7cffb2]">
-                    {item.version}
-                    <span className="text-[#d9e8f7]">{item.status}</span>
-                  </div>
-                  <h3 className="mt-5 font-display text-2xl font-semibold text-white">
-                    {item.title}
-                  </h3>
-                  <p className="mt-4 text-sm leading-7 text-[#9fb0c3]">
-                    {item.description}
-                  </p>
-                  <ul className="mt-6 space-y-3 text-sm text-[#d7e4f0]">
-                    {item.bullets.map((bullet) => (
-                      <li key={bullet} className="flex items-start gap-3">
-                        <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#7cffb2]" />
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                Conhecer versao mobile
+                <ArrowRight className="size-4.5" />
+              </a>
+            </div>
+          </div>
+
+          <div className="faq-grid">
+            {faq.map((item) => (
+              <article key={item.question} className="faq-card" data-float>
+                <h3>{item.question}</h3>
+                <p>{item.answer}</p>
               </article>
             ))}
           </div>
         </section>
 
-        <section id="download" className="pt-24" data-reveal>
-          <div className="glass-panel glow-ring rounded-[36px] px-6 py-8 sm:px-8 lg:px-10">
-            <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-              <div>
-                <SectionLabel>Download</SectionLabel>
-                <h2 className="mt-6 font-display text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl">
-                  Instale no Windows agora e acompanhe a evolucao do produto desde o inicio.
-                </h2>
-                <p className="mt-5 max-w-2xl text-lg leading-8 text-[#a9bacd]">
-                  Se voce quer uma central de estudos para TI que trate carreira,
-                  execucao e progresso como um sistema unico, o melhor momento
-                  para entrar e agora.
-                </p>
-                <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                  <a
-                    className="inline-flex items-center justify-center gap-2 rounded-full border border-[#7cffb2]/35 bg-[linear-gradient(135deg,rgba(124,255,178,0.92),rgba(70,186,135,0.92))] px-6 py-3.5 text-sm font-semibold text-[#04111d] shadow-[0_18px_45px_rgba(8,16,28,0.35)] transition hover:-translate-y-0.5 hover:border-[#b7ffd6] hover:bg-[linear-gradient(135deg,rgba(145,255,192,0.96),rgba(86,210,153,0.96))]"
-                    href={windowsDownloadUrl}
-                  >
-                    <Download className="size-4.5" />
-                    Abrir download Windows
-                  </a>
-                  <a
-                    className="inline-flex items-center justify-center gap-2 rounded-full border border-white/12 bg-white/6 px-6 py-3.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/10"
-                    href={mobileRepositoryUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Acompanhar versao mobile
-                    <ArrowRight className="size-4.5" />
-                  </a>
-                </div>
-              </div>
-              <div className="grid gap-4">
-                {faq.map((item) => (
-                  <article
-                    key={item.question}
-                    className="rounded-[28px] border border-white/10 bg-[#09131f]/88 p-5"
-                  >
-                    <h3 className="font-display text-xl font-semibold text-white">
-                      {item.question}
-                    </h3>
-                    <p className="mt-3 text-sm leading-7 text-[#9fb0c3]">
-                      {item.answer}
-                    </p>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <footer className="flex flex-col gap-4 px-1 pb-4 pt-14 text-sm text-[#91a7c0] sm:flex-row sm:items-center sm:justify-between">
+        <footer className="landing-footer">
           <p>
-            CodeTrail combina trilhas, sessoes, revisoes, projetos e analytics
+            CodeTrail organiza trilhas, sessoes, revisoes, projetos e cadernos
             para transformar estudo em progresso visivel.
           </p>
-          <div className="flex flex-wrap items-center gap-4">
-            <a
-              className="transition hover:text-white"
-              href={windowsDownloadUrl}
-            >
-              Windows
+          <div>
+            <a href="#produto" data-section-link>
+              Produto
             </a>
-            <a
-              className="transition hover:text-white"
-              href={mobileRepositoryUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Mobile
-            </a>
-            <a className="transition hover:text-white" href="#roadmap">
+            <a href="#roadmap" data-section-link>
               Roadmap
             </a>
+            <a href={windowsDownloadUrl}>Windows</a>
           </div>
         </footer>
       </div>
