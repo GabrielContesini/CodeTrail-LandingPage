@@ -17,9 +17,9 @@ export const metadata: Metadata = {
   description:
     "Planejamento de estudos para TI com trilhas, sessoes, revisoes, projetos e uma versao Windows pronta para download.",
   icons: {
-    icon: "/design/CodeTrailMainIconCore.png",
-    apple: "/design/CodeTrailMainIconCore.png",
-    shortcut: "/design/CodeTrailMainIconCore.png",
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+    shortcut: "/favicon.ico",
   },
 };
 

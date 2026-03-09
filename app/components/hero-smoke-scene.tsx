@@ -175,16 +175,16 @@ function Scene() {
   return (
     <>
       <ambientLight intensity={1.1} />
-      <pointLight position={[-2.5, 2.5, 4]} intensity={26} color="#4F8CFF" />
-      <pointLight position={[2.2, -1.2, 4]} intensity={18} color="#22D3EE" />
-      <pointLight position={[0.2, 1.5, 2.8]} intensity={8} color="#22C55E" />
+      <pointLight position={[-2.5, 2.5, 4]} intensity={26} color="#005F73" />
+      <pointLight position={[2.2, -1.2, 4]} intensity={18} color="#2EC5FF" />
+      <pointLight position={[0.2, 1.5, 2.8]} intensity={8} color="#35D39A" />
 
       <group ref={rig}>
         <SmokePoints
           count={170}
           radius={3.2}
           height={4.8}
-          color="#4F8CFF"
+          color="#005F73"
           speed={0.08}
           size={0.18}
         />
@@ -192,7 +192,7 @@ function Scene() {
           count={160}
           radius={2.4}
           height={5.2}
-          color="#22D3EE"
+          color="#2EC5FF"
           speed={-0.11}
           size={0.16}
         />
@@ -200,14 +200,14 @@ function Scene() {
           count={110}
           radius={1.4}
           height={3.2}
-          color="#22C55E"
+          color="#35D39A"
           speed={0.14}
           size={0.12}
         />
 
-        <TrailRibbon offset={-0.9} color="#4F8CFF" speed={0.44} />
-        <TrailRibbon offset={0} color="#22D3EE" speed={0.36} />
-        <TrailRibbon offset={0.9} color="#22C55E" speed={0.28} />
+        <TrailRibbon offset={-0.9} color="#005F73" speed={0.44} />
+        <TrailRibbon offset={0} color="#2EC5FF" speed={0.36} />
+        <TrailRibbon offset={0.9} color="#35D39A" speed={0.28} />
 
         {[2.1, 2.9, 3.7].map((radius, index) => (
           <mesh
@@ -216,7 +216,7 @@ function Scene() {
           >
             <torusGeometry args={[radius, 0.025, 16, 220]} />
             <meshBasicMaterial
-              color={index === 1 ? "#22D3EE" : "#4F8CFF"}
+              color={index === 1 ? "#2EC5FF" : "#005F73"}
               transparent
               opacity={0.18 - index * 0.03}
             />
