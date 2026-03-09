@@ -20,6 +20,9 @@ import {
   Workflow,
 } from "lucide-react";
 
+import { HeroSmokeScene } from "./components/hero-smoke-scene";
+import { LandingMotion } from "./components/landing-motion";
+
 const mobileRepositoryUrl =
   "https://github.com/GabrielContesini/CodeTrail";
 const windowsDownloadUrl = "/download/windows";
@@ -247,13 +250,17 @@ function FeatureCard({ icon: Icon, title, description }: Readonly<Feature>) {
 export default function Home() {
   return (
     <main className="relative overflow-hidden">
+      <LandingMotion />
       <div className="mx-auto flex min-h-screen w-full max-w-[1440px] flex-col px-5 pb-16 pt-5 sm:px-8 lg:px-10">
-        <header className="glass-panel glow-ring sticky top-4 z-30 rounded-[28px] px-5 py-4 sm:px-6">
+        <header
+          className="glass-panel glow-ring sticky top-4 z-30 rounded-[28px] px-5 py-4 sm:px-6"
+          data-reveal
+        >
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
               <div className="flex size-[52px] items-center justify-center rounded-2xl border border-white/10 bg-[#0f1d33]">
                 <Image
-                  src="/CodeTrail.svg"
+                  src="/design/logo.png"
                   alt="CodeTrail"
                   width={34}
                   height={34}
@@ -298,8 +305,11 @@ export default function Home() {
           </div>
         </header>
 
-        <section className="relative grid gap-8 pb-20 pt-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(360px,0.92fr)] lg:items-end lg:pt-16">
-          <div className="relative">
+        <section
+          className="relative grid gap-8 pb-20 pt-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(360px,0.92fr)] lg:items-end lg:pt-16"
+          data-reveal
+        >
+          <div className="relative" data-parallax>
             <div className="absolute -left-4 top-[4.5rem] h-24 w-24 rounded-full bg-[#5ea1ff]/18 blur-3xl" />
             <div className="absolute left-[8.5rem] top-[12.5rem] h-20 w-20 rounded-full bg-[#7cffb2]/14 blur-3xl" />
             <SectionLabel>Windows disponivel agora · Mobile em expansao</SectionLabel>
@@ -341,7 +351,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative">
+          <div className="relative" data-parallax>
+            <HeroSmokeScene />
             <div className="hero-orbit absolute -left-3 top-[4.5rem] hidden rounded-3xl border border-[#7cffb2]/20 bg-[#0e1b2d]/88 px-4 py-3 text-sm text-[#d3f9e5] shadow-[0_24px_60px_rgba(0,0,0,0.34)] lg:block">
               Revisoes D+1, D+7, D+15 e D+30
             </div>
@@ -349,6 +360,31 @@ export default function Home() {
               Planejamento, pratica e revisao no mesmo fluxo
             </div>
             <div className="glass-panel glow-ring scan-line relative overflow-hidden rounded-[36px] p-5 sm:p-6">
+              <div className="hero-video-badge absolute right-5 top-5 z-10 hidden w-[168px] overflow-hidden rounded-[28px] border border-white/12 bg-[#051319]/78 p-2 shadow-[0_28px_70px_rgba(0,0,0,0.38)] lg:block">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="h-[210px] w-full rounded-[20px] object-cover"
+                  src="/design/logo-animated.mp4"
+                />
+                <div className="mt-3 flex items-center gap-3 rounded-[18px] bg-white/[0.04] px-3 py-2">
+                  <Image
+                    src="/design/logo.png"
+                    alt="CodeTrail orb"
+                    width={34}
+                    height={34}
+                    className="rounded-full"
+                  />
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.24em] text-[#7cffb2]">
+                      Signal loop
+                    </p>
+                    <p className="text-sm text-white">Study OS em movimento</p>
+                  </div>
+                </div>
+              </div>
               <div className="grid gap-4 sm:grid-cols-[1.2fr_0.8fr]">
                 <div className="rounded-[28px] border border-white/8 bg-[#08111d]/86 p-5">
                   <div className="flex items-center justify-between">
@@ -424,7 +460,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4" data-reveal>
           {metrics.map((metric) => (
             <article
               key={metric.label}
@@ -443,7 +479,7 @@ export default function Home() {
           ))}
         </section>
 
-        <section id="produto" className="pt-24">
+        <section id="produto" className="pt-24" data-reveal>
           <div className="max-w-3xl">
             <SectionLabel>Produto</SectionLabel>
             <h2 className="mt-6 font-display text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl">
@@ -462,7 +498,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="pt-24">
+        <section className="pt-24" data-reveal>
           <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
             <article className="glass-panel rounded-[32px] p-6 lg:p-8">
               <SectionLabel>Fluxo de uso</SectionLabel>
@@ -541,7 +577,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="plataformas" className="pt-24">
+        <section id="plataformas" className="pt-24" data-reveal>
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
               <SectionLabel>Plataformas</SectionLabel>
@@ -600,7 +636,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="roadmap" className="pt-24">
+        <section id="roadmap" className="pt-24" data-reveal>
           <div className="max-w-3xl">
             <SectionLabel>Roadmap</SectionLabel>
             <h2 className="mt-6 font-display text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl">
@@ -643,7 +679,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="download" className="pt-24">
+        <section id="download" className="pt-24" data-reveal>
           <div className="glass-panel glow-ring rounded-[36px] px-6 py-8 sm:px-8 lg:px-10">
             <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
               <div>
