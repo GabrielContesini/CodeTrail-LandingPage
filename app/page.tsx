@@ -260,7 +260,7 @@ export default function Home() {
             <div className="flex items-center gap-4">
               <div className="flex size-[52px] items-center justify-center rounded-2xl border border-white/10 bg-[#0f1d33]">
                 <Image
-                  src="/design/logo.png"
+                  src="/CodeTrail.svg"
                   alt="CodeTrail"
                   width={34}
                   height={34}
@@ -360,28 +360,26 @@ export default function Home() {
               Planejamento, pratica e revisao no mesmo fluxo
             </div>
             <div className="glass-panel glow-ring scan-line relative overflow-hidden rounded-[36px] p-5 sm:p-6">
-              <div className="hero-video-badge absolute right-5 top-5 z-10 hidden w-[168px] overflow-hidden rounded-[28px] border border-white/12 bg-[#051319]/78 p-2 shadow-[0_28px_70px_rgba(0,0,0,0.38)] lg:block">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="h-[210px] w-full rounded-[20px] object-cover"
-                  src="/design/logo-animated.mp4"
-                />
-                <div className="mt-3 flex items-center gap-3 rounded-[18px] bg-white/[0.04] px-3 py-2">
-                  <Image
-                    src="/design/logo.png"
-                    alt="CodeTrail orb"
-                    width={34}
-                    height={34}
-                    className="rounded-full"
-                  />
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.24em] text-[#7cffb2]">
+              <div className="hero-orb-badge absolute right-7 top-7 z-10 hidden lg:flex">
+                <div className="hero-orb-shell">
+                  <div className="hero-orb-core">
+                    <Image
+                      src="/CodeTrail.svg"
+                      alt="CodeTrail signal"
+                      width={120}
+                      height={120}
+                      className="hero-orb-logo"
+                    />
+                    <div className="hero-orb-rings" />
+                    <div className="hero-orb-rings hero-orb-rings-delayed" />
+                  </div>
+                  <div className="hero-orb-copy">
+                    <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#7cffb2]">
                       Signal loop
                     </p>
-                    <p className="text-sm text-white">Study OS em movimento</p>
+                    <p className="mt-1 text-sm text-white">
+                      Study OS em movimento
+                    </p>
                   </div>
                 </div>
               </div>

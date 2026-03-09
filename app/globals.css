@@ -130,6 +130,66 @@ a {
   animation: orbitFloat 14s ease-in-out infinite;
 }
 
+.hero-orb-badge {
+  animation: orbitFloat 15s ease-in-out infinite;
+}
+
+.hero-orb-shell {
+  width: 212px;
+  padding: 14px;
+  border-radius: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    180deg,
+    rgba(5, 19, 25, 0.9),
+    rgba(6, 25, 32, 0.76)
+  );
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(18px);
+}
+
+.hero-orb-core {
+  position: relative;
+  display: flex;
+  height: 188px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at center, rgba(29, 235, 227, 0.22), transparent 54%),
+    linear-gradient(180deg, rgba(7, 23, 30, 0.96), rgba(7, 19, 25, 0.88));
+}
+
+.hero-orb-logo {
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 0 28px rgba(29, 235, 227, 0.32));
+}
+
+.hero-orb-rings {
+  position: absolute;
+  inset: 24px;
+  border-radius: 999px;
+  border: 2px solid rgba(29, 235, 227, 0.26);
+  animation: pulseRing 4.8s ease-out infinite;
+}
+
+.hero-orb-rings-delayed {
+  inset: 8px;
+  border-color: rgba(131, 255, 214, 0.16);
+  animation-delay: 1.5s;
+}
+
+.hero-orb-copy {
+  margin-top: 12px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 14px 15px;
+}
+
 @keyframes orbitFloat {
   0%,
   100% {
@@ -146,5 +206,16 @@ a {
   }
   100% {
     transform: translateX(120%);
+  }
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.82);
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(1.16);
+    opacity: 0;
   }
 }
