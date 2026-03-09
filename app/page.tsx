@@ -23,7 +23,7 @@ import { LandingMotion } from "./components/landing-motion";
 
 const mobileRepositoryUrl = "https://github.com/GabrielContesini/CodeTrail";
 const windowsDownloadUrl = "/download/windows";
-const brandMark = "/design/CodeTrailMainIconTransparent.png";
+const brandMark = "/design/CodeTrailMainIcon.png";
 
 type Feature = {
   icon: LucideIcon;
@@ -276,7 +276,7 @@ export default function Home() {
             <div>
               <p className="landing-brand-title">CodeTrail</p>
               <p className="landing-brand-subtitle">
-                Study OS para carreiras em tecnologia
+                Sistema de estudo para carreiras em tecnologia
               </p>
             </div>
           </div>
@@ -328,7 +328,7 @@ export default function Home() {
             <div className="hero-tags">
               <span>Desktop workspace</span>
               <span>Android tablet</span>
-              <span>Cadernos com contexto</span>
+              <span>Execucao com foco</span>
               <span>Roadmap vivo</span>
             </div>
           </div>
@@ -341,7 +341,7 @@ export default function Home() {
                 <div className="hero-card-header">
                   <div>
                     <p className="hero-caption">Painel tatico</p>
-                    <h2>Seu estudo deixa de ser solto e vira sistema.</h2>
+                    <h2>Seu estudo deixa de ser solto e vira um sistema claro.</h2>
                   </div>
                   <div className="hero-chip">
                     <Radar className="size-4" />
@@ -352,7 +352,7 @@ export default function Home() {
                 <p className="hero-showcase-copy">
                   Um workspace unico para planejar trilhas, executar sessoes,
                   capturar notas, revisar o que importa e ler o progresso sem
-                  perder tempo remontando a rotina.
+                  perder tempo remontando a rotina toda semana.
                 </p>
 
                 <div className="hero-stat-grid">
@@ -378,6 +378,7 @@ export default function Home() {
                       priority
                     />
                   </div>
+                  <strong>Uma unica linguagem para planejar, estudar e revisar.</strong>
                   <span>
                     Uma central para organizar estudo, pratica e evidencia sem
                     virar uma colagem de apps.
