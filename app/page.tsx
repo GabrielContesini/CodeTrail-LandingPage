@@ -253,17 +253,17 @@ export default function Home() {
       <LandingMotion />
       <div className="mx-auto flex min-h-screen w-full max-w-[1440px] flex-col px-5 pb-16 pt-5 sm:px-8 lg:px-10">
         <header
-          className="glass-panel glow-ring sticky top-4 z-30 rounded-[28px] px-5 py-4 sm:px-6"
+          className="glass-panel glow-ring sticky top-4 z-30 rounded-[30px] px-5 py-4 sm:px-6"
           data-reveal
         >
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex size-[52px] items-center justify-center rounded-2xl border border-white/10 bg-[#0f1d33]">
+              <div className="brand-mark">
                 <Image
-                  src="/CodeTrail.svg"
+                  src="/design/app_icon.png"
                   alt="CodeTrail"
-                  width={34}
-                  height={34}
+                  width={40}
+                  height={40}
                   priority
                 />
               </div>
@@ -271,12 +271,13 @@ export default function Home() {
                 <p className="font-display text-lg font-semibold text-white">
                   CodeTrail
                 </p>
-                <p className="text-sm text-[#9fb0c3]">
+                <p className="text-sm text-[#bfe5de]">
                   Study OS para carreiras em tecnologia
                 </p>
               </div>
             </div>
-            <nav className="flex flex-wrap items-center gap-3 text-sm text-[#b8c5d4]">
+            <div className="flex flex-col gap-3 lg:items-end">
+              <nav className="flex flex-wrap items-center gap-2 text-sm text-[#c9e2dd]">
               <a
                 className="rounded-full px-3 py-2 transition hover:bg-white/[0.08] hover:text-white"
                 href="#produto"
@@ -301,7 +302,15 @@ export default function Home() {
               >
                 Download
               </a>
-            </nav>
+              </nav>
+              <a
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#5ef2d5]/25 bg-[linear-gradient(135deg,rgba(28,239,227,0.2),rgba(6,31,31,0.96))] px-4 py-2 text-sm font-semibold text-white transition hover:border-[#84ffe1]/45 hover:bg-[linear-gradient(135deg,rgba(28,239,227,0.3),rgba(8,38,39,1))]"
+                href={windowsDownloadUrl}
+              >
+                <Download className="size-4" />
+                Baixar Windows
+              </a>
+            </div>
           </div>
         </header>
 
@@ -310,8 +319,6 @@ export default function Home() {
           data-reveal
         >
           <div className="relative" data-parallax>
-            <div className="absolute -left-4 top-[4.5rem] h-24 w-24 rounded-full bg-[#5ea1ff]/18 blur-3xl" />
-            <div className="absolute left-[8.5rem] top-[12.5rem] h-20 w-20 rounded-full bg-[#7cffb2]/14 blur-3xl" />
             <SectionLabel>Windows disponivel agora · Mobile em expansao</SectionLabel>
             <h1 className="mt-7 max-w-4xl font-display text-5xl font-semibold leading-[0.98] tracking-[-0.04em] text-white sm:text-6xl xl:text-[5.8rem]">
               O lugar onde sua rotina de estudos em TI finalmente faz sentido.
@@ -324,14 +331,14 @@ export default function Home() {
             </p>
             <div className="mt-9 flex flex-col gap-4 sm:flex-row">
               <a
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#5ea1ff]/35 bg-[linear-gradient(135deg,rgba(94,161,255,0.28),rgba(17,31,51,0.96))] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(8,16,28,0.35)] transition hover:-translate-y-0.5 hover:border-[#7bb5ff]/55 hover:bg-[linear-gradient(135deg,rgba(94,161,255,0.38),rgba(20,36,58,1))]"
+                className="cta-primary"
                 href={windowsDownloadUrl}
               >
                 <Download className="size-4.5" />
                 Baixar versao Windows
               </a>
               <a
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#2a3b54] bg-[#0c1727] px-6 py-3.5 text-sm font-semibold text-[#d9e7f5] shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition hover:-translate-y-0.5 hover:border-[#3f5678] hover:bg-[#122035] hover:text-white"
+                className="cta-secondary"
                 href="#roadmap"
               >
                 Ver roadmap do produto
@@ -352,38 +359,10 @@ export default function Home() {
           </div>
 
           <div className="relative" data-parallax>
-            <HeroSmokeScene />
-            <div className="hero-orbit absolute -left-3 top-[4.5rem] hidden rounded-3xl border border-[#7cffb2]/20 bg-[#0e1b2d]/88 px-4 py-3 text-sm text-[#d3f9e5] shadow-[0_24px_60px_rgba(0,0,0,0.34)] lg:block">
-              Revisoes D+1, D+7, D+15 e D+30
-            </div>
-            <div className="hero-orbit-delayed absolute right-0 top-0 hidden rounded-3xl border border-[#5ea1ff]/20 bg-[#0d1a2a]/90 px-4 py-3 text-sm text-[#d8e7ff] shadow-[0_24px_60px_rgba(0,0,0,0.34)] lg:block">
-              Planejamento, pratica e revisao no mesmo fluxo
-            </div>
-            <div className="glass-panel glow-ring scan-line relative overflow-hidden rounded-[36px] p-5 sm:p-6">
-              <div className="hero-orb-badge absolute right-7 top-7 z-10 hidden lg:flex">
-                <div className="hero-orb-shell">
-                  <div className="hero-orb-core">
-                    <Image
-                      src="/CodeTrail.svg"
-                      alt="CodeTrail signal"
-                      width={120}
-                      height={120}
-                      className="hero-orb-logo"
-                    />
-                    <div className="hero-orb-rings" />
-                    <div className="hero-orb-rings hero-orb-rings-delayed" />
-                  </div>
-                  <div className="hero-orb-copy">
-                    <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#7cffb2]">
-                      Signal loop
-                    </p>
-                    <p className="mt-1 text-sm text-white">
-                      Study OS em movimento
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-[1.2fr_0.8fr]">
+            <div className="glass-panel glow-ring hero-stage relative overflow-hidden rounded-[38px] p-5 sm:p-6">
+              <HeroSmokeScene />
+              <div className="hero-scene-vignette" />
+              <div className="relative z-10 grid gap-4 sm:grid-cols-[1.16fr_0.84fr]">
                 <div className="rounded-[28px] border border-white/8 bg-[#08111d]/86 p-5">
                   <div className="flex items-center justify-between">
                     <div>
@@ -420,6 +399,29 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="space-y-4">
+                  <div className="hero-signal-card">
+                    <div className="hero-signal-core">
+                      <div className="hero-signal-ring hero-signal-ring--outer" />
+                      <div className="hero-signal-ring hero-signal-ring--inner" />
+                      <div className="hero-signal-mark">
+                        <Image
+                          src="/design/app_icon.png"
+                          alt="CodeTrail signal"
+                          width={84}
+                          height={84}
+                          className="hero-signal-logo"
+                        />
+                      </div>
+                    </div>
+                    <div className="hero-signal-copy">
+                      <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[#7cffb2]">
+                        Signal loop
+                      </p>
+                      <p className="mt-1 text-sm text-white">
+                        Workspace vivo, consistencia visivel e estudo em fluxo.
+                      </p>
+                    </div>
+                  </div>
                   <div className="rounded-[28px] border border-white/8 bg-[#0b1625]/88 p-5">
                     <p className="text-xs uppercase tracking-[0.24em] text-[#91a7c0]">
                       Trilha ativa
