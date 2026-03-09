@@ -14,7 +14,6 @@ import {
   Radar,
   ShieldCheck,
   Sparkles,
-  Target,
   TabletSmartphone,
   TimerReset,
   TrendingUp,
@@ -26,6 +25,7 @@ import { LandingMotion } from "./components/landing-motion";
 
 const mobileRepositoryUrl = "https://github.com/GabrielContesini/CodeTrail";
 const windowsDownloadUrl = "/download/windows";
+const brandMark = "/design/CodeTrailMainIconTransparent.png";
 
 type Feature = {
   icon: LucideIcon;
@@ -53,26 +53,26 @@ type RoadmapItem = {
 
 const heroStats = [
   {
-    label: "Sessao orientada",
-    value: "2h 40m",
-    detail: "Teoria, pratica, projeto e revisao no mesmo fluxo.",
+    label: "Semana atual",
+    value: "12h",
+    detail: "Sessoes, projetos e revisoes no mesmo ritmo operacional.",
   },
   {
-    label: "Consistencia",
+    label: "Ritmo",
     value: "16 dias",
-    detail: "Ritmo visivel sem depender de memoria ou improviso.",
+    detail: "Consistencia visivel sem depender de memoria ou improviso.",
   },
   {
-    label: "Trilha viva",
+    label: "Trilha",
     value: "68%",
-    detail: "Roadmap, progresso e proximos passos dentro do mesmo workspace.",
+    detail: "Roadmap, skills e proximos passos vivos dentro do workspace.",
   },
 ];
 
 const productFeatures: Feature[] = [
   {
     icon: LayoutDashboard,
-    title: "Workspace de estudo realmente centralizado",
+    title: "Workspace de estudo centralizado",
     description:
       "Trilhas, sessoes, tarefas, revisoes, projetos e analytics organizados como um sistema unico.",
   },
@@ -86,11 +86,11 @@ const productFeatures: Feature[] = [
     icon: BookOpenText,
     title: "Notas com contexto",
     description:
-      "Cadernos, paginas e resumos ligados ao que voce estuda, sem virar um arquivo morto de texto solto.",
+      "Cadernos, paginas e resumos ligados ao que voce estuda, sem virar arquivo morto de texto solto.",
   },
   {
     icon: FolderGit2,
-    title: "Projetos praticos dentro da rotina",
+    title: "Projetos praticos na rotina",
     description:
       "Escopo, etapas, progresso e GitHub conectados ao caminho da carreira e nao isolados em outra ferramenta.",
   },
@@ -261,15 +261,17 @@ export default function Home() {
       <LandingMotion />
       <div className="page-curtain" data-page-curtain />
 
+      <div className="landing-background" />
+
       <div className="landing-shell">
         <header className="landing-nav-shell glass-panel" data-intro="nav">
           <div className="landing-brand">
             <div className="landing-brand-mark">
               <Image
-                src="/design/CodeTrailMainIcon.png"
+                src={brandMark}
                 alt="CodeTrail"
-                width={44}
-                height={44}
+                width={42}
+                height={42}
                 priority
               />
             </div>
@@ -299,17 +301,19 @@ export default function Home() {
 
         <section className="hero-shell" data-section>
           <div className="hero-copy" data-intro="hero-copy">
-            <SectionKicker>Windows disponivel agora · mobile para tablet</SectionKicker>
+            <SectionKicker>
+              Windows disponivel agora · mobile para tablet
+            </SectionKicker>
 
             <h1>
-              O sistema que transforma sua rotina de estudos em execucao
-              organizada.
+              O lugar onde sua rotina de estudos em TI finalmente faz sentido.
             </h1>
 
             <p>
-              CodeTrail junta trilhas, sessoes, revisoes, notas, tarefas e
-              projetos em um workspace com cara de produto de verdade. Menos
-              caos, mais clareza, mais evidencia de evolucao.
+              Planeje trilhas, rode sessoes, acompanhe revisoes, execute projetos
+              praticos e veja seu progresso sem se perder em dezenas de apps.
+              CodeTrail foi desenhado para quem quer evolucao real, nao so
+              intencao.
             </p>
 
             <div className="hero-actions">
@@ -317,104 +321,113 @@ export default function Home() {
                 <Download className="size-4.5" />
                 Baixar versao Windows
               </a>
-              <a
-                className="cta-secondary"
-                href="#roadmap"
-                data-section-link
-              >
+              <a className="cta-secondary" href="#roadmap" data-section-link>
                 Ver roadmap do produto
                 <ArrowRight className="size-4.5" />
               </a>
             </div>
 
             <div className="hero-tags">
-              <span>Offline-first</span>
-              <span>Windows workspace</span>
+              <span>Desktop workspace</span>
               <span>Android tablet</span>
+              <span>Cadernos com contexto</span>
               <span>Roadmap vivo</span>
             </div>
           </div>
 
-          <div className="hero-stage-shell glass-panel" data-intro="hero-scene">
+          <div className="hero-visual-shell glass-panel" data-intro="hero-scene">
             <HeroSmokeScene />
-            <div className="hero-stage-grid">
-              <div className="hero-primary-panel" data-float>
-                <div className="hero-panel-topline">
-                  <SectionKicker>Orbito de execucao</SectionKicker>
-                  <div className="hero-mini-badge">
-                    <Target className="size-4" />
-                    ritmo ativo
+
+            <div className="hero-visual-grid">
+              <article className="hero-dashboard-card" data-float>
+                <div className="hero-card-header">
+                  <div>
+                    <p className="hero-caption">Painel tatico</p>
+                    <h2>Seu estudo deixa de ser solto e vira sistema.</h2>
+                  </div>
+                  <div className="hero-chip">
+                    <Radar className="size-4" />
+                    sinal ativo
                   </div>
                 </div>
 
-                <div className="hero-panel-body">
-                  <div className="hero-headline-block">
-                    <p className="hero-caption">Workspace vivo</p>
-                    <h2>Planejamento, estudo e evidencia dentro do mesmo loop.</h2>
-                    <p className="hero-support">
-                      Uma interface para carregar a trilha, rodar o foco, revisar
-                      o que importa e manter o progresso visivel.
-                    </p>
-                  </div>
+                <div className="hero-stat-grid">
+                  {heroStats.map((item) => (
+                    <article key={item.label} className="hero-stat-card" data-stat-item>
+                      <p>{item.label}</p>
+                      <strong>{item.value}</strong>
+                      <span>{item.detail}</span>
+                    </article>
+                  ))}
+                </div>
 
-                  <div className="hero-stat-grid">
-                    {heroStats.map((item) => (
-                      <article key={item.label} className="hero-stat-card" data-stat-item>
-                        <p>{item.label}</p>
-                        <strong>{item.value}</strong>
-                        <span>{item.detail}</span>
-                      </article>
-                    ))}
+                <div className="hero-dashboard-footer">
+                  <div className="hero-strip-card">
+                    <p className="hero-caption">Trilha prioritaria</p>
+                    <h3>Backend Python</h3>
+                    <span>Roadmap, modulos e skills em progresso continuo.</span>
+                  </div>
+                  <div className="hero-strip-card">
+                    <p className="hero-caption">Ritmo operacional</p>
+                    <ul>
+                      <li>
+                        <Workflow className="size-4" />
+                        sessoes e revisoes no mesmo loop
+                      </li>
+                      <li>
+                        <BookOpenText className="size-4" />
+                        cadernos ligados ao contexto
+                      </li>
+                      <li>
+                        <Blocks className="size-4" />
+                        projetos conectados a carreira
+                      </li>
+                    </ul>
                   </div>
                 </div>
-              </div>
+              </article>
 
-              <div className="hero-side-column">
-                <article className="hero-icon-card" data-float>
-                  <div className="hero-orbit-core">
-                    <div className="hero-orbit-ring hero-orbit-ring--outer" />
-                    <div className="hero-orbit-ring hero-orbit-ring--inner" />
-                    <div className="hero-orbit-mark">
-                      <Image
-                        src="/design/CodeTrailMainIcon.png"
-                        alt="CodeTrail signal"
-                        width={122}
-                        height={122}
-                        priority
-                      />
-                    </div>
-                    <span className="hero-orbit-chip hero-orbit-chip--top">
-                      <Orbit className="size-3.5" />
-                      trilha
-                    </span>
-                    <span className="hero-orbit-chip hero-orbit-chip--right">
-                      <Radar className="size-3.5" />
-                      analytics
-                    </span>
-                    <span className="hero-orbit-chip hero-orbit-chip--bottom">
-                      <Blocks className="size-3.5" />
-                      projetos
-                    </span>
+              <div className="hero-side-stack">
+                <article className="hero-signal-card" data-float>
+                  <div className="hero-signal-mark">
+                    <Image
+                      src={brandMark}
+                      alt="CodeTrail signal"
+                      width={124}
+                      height={124}
+                      priority
+                    />
                   </div>
+                  <p className="hero-caption">Signal loop</p>
+                  <h3>Uma central para organizar estudo, pratica e evidencias.</h3>
+                  <span>
+                    Menos caos visual, mais clareza de proxima acao, consistencia
+                    e progresso acumulado.
+                  </span>
                 </article>
 
-                <article className="hero-context-card" data-float>
-                  <p className="hero-caption">Signal loop</p>
-                  <h3>Rotina em movimento, nao estudo solto.</h3>
-                  <ul>
-                    <li>
-                      <Workflow className="size-4" />
-                      trilhas ligadas a progresso real
-                    </li>
-                    <li>
-                      <BookOpenText className="size-4" />
-                      cadernos com contexto
-                    </li>
-                    <li>
-                      <MonitorCog className="size-4" />
-                      desktop pronto para uso diario
-                    </li>
-                  </ul>
+                <article className="hero-flow-card" data-float>
+                  <div className="hero-flow-row">
+                    <Orbit className="size-4.5" />
+                    <div>
+                      <strong>Planejar</strong>
+                      <span>Trilhas, metas e modulos do jeito certo.</span>
+                    </div>
+                  </div>
+                  <div className="hero-flow-row">
+                    <TimerReset className="size-4.5" />
+                    <div>
+                      <strong>Executar</strong>
+                      <span>Sessoes, templates e revisoes sem atrito.</span>
+                    </div>
+                  </div>
+                  <div className="hero-flow-row">
+                    <TrendingUp className="size-4.5" />
+                    <div>
+                      <strong>Ler a evolucao</strong>
+                      <span>Analytics, streak e consistencia visiveis.</span>
+                    </div>
+                  </div>
                 </article>
               </div>
             </div>
