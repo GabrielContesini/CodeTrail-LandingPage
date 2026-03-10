@@ -15,9 +15,9 @@ describe("Landing page", () => {
     const html = renderToStaticMarkup(<Home />);
 
     expect(html).toContain("CodeTrail");
-    expect(html).toContain("Baixar versao Windows");
-    expect(html).toContain("Conhecer versao mobile");
-    expect(html).toContain("Roadmap");
+    expect(html).toContain("ACESSAR CLIENTE WINDOWS");
+    expect(html).toContain("COLETAR INTEL");
+    expect(html).toContain("TRILHA DE EVOLUÇÃO");
   });
 
   it("does not expose infrastructure terms in the public copy", async () => {

@@ -17,7 +17,7 @@ export default function Home() {
           <div className="flex items-center gap-4">
             <Image src={brandMark} alt="CodeTrail Logo" width={32} height={32} className="opacity-90 grayscale contrast-200" />
             <div className="font-display font-bold text-xl text-cyber tracking-widest uppercase hidden md:block">
-              CodeTrail <span className="opacity-50 font-sans text-xs ml-2 tracking-normal">// SYSTEM.ONLINE</span>
+              CodeTrail <span className="opacity-50 font-sans text-xs ml-2 tracking-normal">{"// SYSTEM.ONLINE"}</span>
             </div>
           </div>
           <Link href="/download/windows" className="btn-cyber text-xs px-6 py-3">

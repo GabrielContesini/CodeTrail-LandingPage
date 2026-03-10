@@ -49,7 +49,7 @@ export function LandingMotion() {
 
     // Reveal animations for HUD items
     const hudPanels = document.querySelectorAll(".hud-reveal");
-    hudPanels.forEach((panel, i) => {
+    hudPanels.forEach((panel) => {
       gsap.fromTo(
         panel,
         { opacity: 0, y: 30, scale: 0.98 },

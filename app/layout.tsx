@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
@@ -36,6 +38,8 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`${displayFont.variable} ${bodyFont.variable}`}>
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

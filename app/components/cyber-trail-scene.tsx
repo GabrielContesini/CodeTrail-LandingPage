@@ -1,8 +1,13 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useSyncExternalStore } from "react";
 import * as THREE from "three";
+
+function pseudoRandom(seed: number) {
+ const x = Math.sin(seed * 9999.123) * 43758.5453;
+ return x - Math.floor(x);
+}
 
 function TrailParticles() {
  const instancesRef = useRef<THREE.InstancedMesh>(null);
@@ -24,18 +29,21 @@ function TrailParticles() {
  const particles = useMemo(() => {
   const temp = [];
   for (let i = 0; i < particleCount; i++) {
-   const t = Math.random();
+   const t = pseudoRandom(i + 1);
    const pos = curve.getPointAt(t);
-   // spread from core
-   pos.x += (Math.random() - 0.5) * 16;
-   pos.y += (Math.random() - 0.5) * 16;
-   pos.z += (Math.random() - 0.5) * 6;
+   const spreadX = pseudoRandom(i + 101) - 0.5;
+   const spreadY = pseudoRandom(i + 202) - 0.5;
+   const spreadZ = pseudoRandom(i + 303) - 0.5;
+
+   pos.x += spreadX * 16;
+   pos.y += spreadY * 16;
+   pos.z += spreadZ * 6;
 
    temp.push({
     t,
     position: pos,
-    scale: Math.random() * 0.05 + 0.01,
-    speed: Math.random() * 0.02 + 0.01
+    scale: pseudoRandom(i + 404) * 0.05 + 0.01,
+    speed: pseudoRandom(i + 505) * 0.02 + 0.01,
    });
   }
   return temp;
@@ -83,8 +91,11 @@ function TrailParticles() {
 }
 
 export function CyberTrailScene() {
- const [mounted, setMounted] = useState(false);
- useEffect(() => setMounted(true), []);
+ const mounted = useSyncExternalStore(
+  () => () => {},
+  () => true,
+  () => false,
+ );
 
  if (!mounted) return null;
 
