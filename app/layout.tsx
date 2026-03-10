@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Space_Grotesk } from "next/font/google";
+import { JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
 const displayFont = Space_Grotesk({
@@ -7,7 +7,7 @@ const displayFont = Space_Grotesk({
   subsets: ["latin"],
 });
 
-const bodyFont = Manrope({
+const bodyFont = JetBrains_Mono({
   variable: "--font-sans",
   subsets: ["latin"],
 });
@@ -17,7 +17,11 @@ export const metadata: Metadata = {
   description:
     "Planejamento de estudos para TI com trilhas, sessoes, revisoes, projetos e uma versao Windows pronta para download.",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
     apple: "/apple-touch-icon.png",
     shortcut: "/favicon.ico",
   },

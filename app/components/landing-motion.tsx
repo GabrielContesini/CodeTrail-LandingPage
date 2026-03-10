@@ -1,138 +1,75 @@
 "use client";
 
-import { useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect } from "react";
 
-function scrollToSection(selector: string) {
-  const target = document.querySelector<HTMLElement>(selector);
-  if (!target) {
-    return;
-  }
-
-  const top = target.getBoundingClientRect().top + window.scrollY - 104;
-  window.scrollTo({ top, behavior: "auto" });
-  window.history.replaceState(null, "", selector);
-}
+gsap.registerPlugin(ScrollTrigger);
 
 export function LandingMotion() {
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    // Decoding effect for headers
+    const decodings = document.querySelectorAll(".decode-text");
 
-    const curtain = document.querySelector<HTMLElement>("[data-page-curtain]");
-    const introItems = gsap.utils.toArray<HTMLElement>("[data-intro]");
-    const sections = gsap.utils.toArray<HTMLElement>("[data-section]");
-    const floatItems = gsap.utils.toArray<HTMLElement>("[data-float]");
-    const navLinks = gsap.utils.toArray<HTMLAnchorElement>("[data-section-link]");
+    decodings.forEach((el) => {
+      const originalText = el.getAttribute("data-text") || el.textContent || "";
+      if (!el.hasAttribute("data-text")) {
+        el.setAttribute("data-text", originalText);
+      }
 
-    const introTimeline = gsap.timeline({ defaults: { ease: "power3.out" } });
+      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
 
-    if (curtain) {
-      introTimeline.to(curtain, {
-        scaleY: 0,
-        transformOrigin: "top center",
-        duration: 1.05,
-      });
-    }
+      ScrollTrigger.create({
+        trigger: el,
+        start: "top 85%",
+        onEnter: () => {
+          let iteration = 0;
+          let interval: NodeJS.Timeout | null = null;
 
-    introTimeline.fromTo(
-      introItems,
-      {
-        opacity: 0,
-        y: 36,
-        filter: "blur(10px)",
-      },
-      {
-        opacity: 1,
-        y: 0,
-        filter: "blur(0px)",
-        duration: 1,
-        stagger: 0.12,
-      },
-      curtain ? "-=0.72" : 0,
-    );
+          clearInterval(interval!);
 
-    sections.forEach((section) => {
-      gsap.fromTo(
-        section,
-        {
-          opacity: 0,
-          y: 56,
+          interval = setInterval(() => {
+            el.textContent = originalText.split("").map((letter, index) => {
+              if (index < iteration) {
+                return originalText[index];
+              }
+              const isSpace = originalText[index] === " " || originalText[index] === "\n";
+              if (isSpace) return originalText[index]; // Preserve layout
+              return letters[Math.floor(Math.random() * letters.length)];
+            }).join("");
+
+            if (iteration >= originalText.length) {
+              clearInterval(interval!);
+            }
+            iteration += 1 / 4;
+          }, 30);
         },
+      });
+    });
+
+    // Reveal animations for HUD items
+    const hudPanels = document.querySelectorAll(".hud-reveal");
+    hudPanels.forEach((panel, i) => {
+      gsap.fromTo(
+        panel,
+        { opacity: 0, y: 30, scale: 0.98 },
         {
           opacity: 1,
           y: 0,
-          duration: 1,
-          ease: "power3.out",
+          scale: 1,
+          duration: 0.6,
+          ease: "power2.out",
           scrollTrigger: {
-            trigger: section,
-            start: "top 78%",
-            once: true,
-          },
-        },
+            trigger: panel,
+            start: "top 90%",
+            toggleActions: "play none none reverse"
+          }
+        }
       );
     });
 
-    floatItems.forEach((item, index) => {
-      gsap.to(item, {
-        yPercent: index % 2 === 0 ? -7 : -11,
-        ease: "none",
-        scrollTrigger: {
-          trigger: item,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-    });
-
-    const handlers = navLinks.map((link) => {
-      const href = link.getAttribute("href");
-      if (!href?.startsWith("#")) {
-        return () => {};
-      }
-
-      const handler = (event: Event) => {
-        event.preventDefault();
-
-        if (!curtain) {
-          scrollToSection(href);
-          return;
-        }
-
-        const timeline = gsap.timeline({
-          defaults: { ease: "power3.inOut" },
-        });
-
-        timeline
-          .set(curtain, {
-            transformOrigin: "bottom center",
-            pointerEvents: "auto",
-          })
-          .to(curtain, {
-            scaleY: 1,
-            duration: 0.42,
-          })
-          .add(() => {
-            scrollToSection(href);
-          })
-          .set(curtain, {
-            transformOrigin: "top center",
-          })
-          .to(curtain, {
-            scaleY: 0,
-            duration: 0.52,
-          })
-          .set(curtain, { pointerEvents: "none" });
-      };
-
-      link.addEventListener("click", handler);
-      return () => link.removeEventListener("click", handler);
-    });
-
     return () => {
-      handlers.forEach((cleanup) => cleanup());
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      ScrollTrigger.getAll().forEach(t => t.kill());
     };
   }, []);
 
