@@ -26,22 +26,37 @@ export function LandingMotion() {
           let iteration = 0;
           let interval: NodeJS.Timeout | null = null;
 
+          const target = el as HTMLElement;
+          target.style.position = "relative";
+          // Wrap in a layout-preserving container that won't break if wrapped around pure text spans
+          target.innerHTML = `
+            <span style="opacity: 0; pointer-events: none; visibility: hidden; white-space: pre-wrap;">${originalText}</span>
+            <span class="animated-decode-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; white-space: pre-wrap;"></span>
+          `;
+
+          const animatedLayer = target.querySelector(".animated-decode-layer");
+
           clearInterval(interval!);
 
           interval = setInterval(() => {
-            el.textContent = originalText.split("").map((letter, index) => {
+            const newText = originalText.split("").map((letter, index) => {
               if (index < iteration) {
                 return originalText[index];
               }
-              const isSpace = originalText[index] === " " || originalText[index] === "\n";
-              if (isSpace) return originalText[index]; // Preserve layout
+              const isSpace = originalText[index] === " ";
+              if (isSpace) return " ";
               return letters[Math.floor(Math.random() * letters.length)];
             }).join("");
 
+            if (animatedLayer) {
+              animatedLayer.innerHTML = newText;
+            }
+
             if (iteration >= originalText.length) {
               clearInterval(interval!);
+              target.innerHTML = originalText;
             }
-            iteration += 1 / 4;
+            iteration += 1 / 3;
           }, 30);
         },
       });

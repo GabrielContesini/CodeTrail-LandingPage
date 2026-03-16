@@ -31,6 +31,15 @@ html, body {
   font-family: var(--font-sans), monospace;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2300f0ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v4'/%3E%3Cpath d='M12 18v4'/%3E%3Cpath d='M4 12H2'/%3E%3Cpath d='M22 12h-2'/%3E%3C/svg%3E") 12 12, auto;
+}
+
+a, button, [role="button"], input[type="submit"], input[type="button"], .cursor-pointer {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2300f0ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='2' fill='%2300f0ff'/%3E%3Ccircle cx='12' cy='12' r='8' stroke-dasharray='4 4'/%3E%3C/svg%3E") 12 12, pointer !important;
+}
+
+input, textarea {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2300f0ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v16'/%3E%3Cpath d='M8 4h8'/%3E%3Cpath d='M8 20h8'/%3E%3C/svg%3E") 12 12, text !important;
 }
 
 /* Scrollbar */
