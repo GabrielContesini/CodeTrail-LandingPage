@@ -90,7 +90,7 @@ export default function Home() {
             </div>
           </div>
           <div className="mt-12 text-center text-text-secondary font-sans uppercase tracking-widest text-sm border border-white/5 bg-white/5 py-4">
-            "A sensação frustrante de estudar por meses e não conseguir medir a própria evolução."
+            &quot;A sensação frustrante de estudar por meses e não conseguir medir a própria evolução.&quot;
           </div>
         </section>
 
@@ -146,7 +146,7 @@ export default function Home() {
             {[
               { num: "01", title: "ESCOLHA SUA TRILHA", desc: "Defina seu macro-objetivo principal" },
               { num: "02", title: "ORGANIZE A ROTINA", desc: "Quebre frentes em sessões menores" },
-              { num: "03", title: "ESTUDE CLARO", desc: "Sem ter que pensar 'o que faço?'" },
+              { num: "03", title: "ESTUDE CLARO", desc: "Sem ter que pensar &apos;o que faço?&apos;" },
               { num: "04", title: "ACOMPANHE O SCORE", desc: "Celebre o crescimento contínuo" },
             ].map((step, idx) => (
               <div key={idx} className="relative z-10 flex flex-col items-center text-center">
@@ -283,9 +283,11 @@ export default function Home() {
         <section className="py-24 layout-grid text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-cyber opacity-[0.02] mix-blend-screen pointer-events-none"></div>
           <div className="hud-panel max-w-4xl mx-auto border-dashed border-white/20">
-            <h2 className="decode-text text-white mb-6 text-2xl font-display tracking-widest uppercase" data-text="A EVOLUÇÃO DA COMUNIDADE">A EVOLUÇÃO DA COMUNIDADE</h2>
+            <h2 className="text-white mb-6 text-2xl font-display tracking-widest uppercase">
+              <span className="decode-text block" data-text="A EVOLUÇÃO DA COMUNIDADE">A EVOLUÇÃO DA COMUNIDADE</span>
+            </h2>
             <p className="font-sans text-text-secondary uppercase tracking-widest text-sm leading-relaxed max-w-2xl mx-auto italic">
-              "Junte-se à nova geração de profissionais tech que deixaram de apenas 'fazer cursos' e passaram a construir sistemas reais de aprendizado e progressão sólida."
+              &quot;Junte-se à nova geração de profissionais tech que deixaram de apenas &apos;fazer cursos&apos; e passaram a construir sistemas reais de aprendizado e progressão sólida.&quot;
             </p>
           </div>
         </section>
@@ -340,7 +342,7 @@ export default function Home() {
         <footer className="layout-grid pb-12 flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-sans uppercase tracking-[0.2em] text-text-secondary border-t border-white/5 pt-8">
           <div className="flex items-center gap-3">
             <Image src={brandMark} alt="CodeTrail Logo" width={24} height={24} className="grayscale opacity-50" />
-            <span>CODETRAIL &copy; {new Date().getFullYear()} // SISTEMA OPERACIONAL DE ESTUDOS</span>
+            <span>CODETRAIL &copy; {new Date().getFullYear()} {/* SISTEMA OPERACIONAL DE ESTUDOS */}</span>
           </div>
           <div className="flex gap-8">
             <a href="#" className="hover:text-cyber transition-colors">PLANOS</a>

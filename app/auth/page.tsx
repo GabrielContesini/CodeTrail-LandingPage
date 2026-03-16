@@ -5,7 +5,6 @@ import { usePlanIntent } from "@/store/plan-intent-store";
 import { ArrowRight, Eye, EyeOff, Home, Loader2, Terminal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CyberTrailScene } from "../components/cyber-trail-scene";
 import { LandingMotion } from "../components/landing-motion";
@@ -13,7 +12,10 @@ import { LandingMotion } from "../components/landing-motion";
 const brandMark = "/design/CodeTrailMainIcon.png";
 
 export default function AuthPage() {
- const router = useRouter();
+ // We instantiate router but don't strictly use it in the success branch now,
+ // though it might be used later. If it's unused, we can remove it. Let's just remove it if unused.
+ // Actually, looking at the code, we replaced router.push with window.location.href.
+ // So we can safely NOT import useRouter and NOT instantiate it.
  const { selectedPlan, clearIntent } = usePlanIntent();
 
  const [isLogin, setIsLogin] = useState(true);

@@ -3,8 +3,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
-function getAuthError(error: any) {
- const msg = error?.message || "";
+function getAuthError(error: Error | unknown) {
+ const msg = error instanceof Error ? error.message : "";
  if (msg.includes("Invalid login credentials")) return "Credenciais incorretas (E-mail ou Senha).";
  if (msg.includes("User already registered")) return "Este e-mail já está sendo utilizado.";
  if (msg.includes("Password should be at least")) return "A senha deve ter no mínimo 6 caracteres.";
