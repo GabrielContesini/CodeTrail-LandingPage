@@ -16,7 +16,6 @@ export function AuthTrigger({
  onClick?: (e: React.MouseEvent) => void;
 }) {
  const { setIntent } = usePlanIntent();
- const supabase = createClient();
  const router = useRouter();
 
  const handleTrigger = async (e: React.MouseEvent) => {
@@ -29,6 +28,8 @@ export function AuthTrigger({
    setIntent(null);
   }
 
+  // Instantiate client inside the event handler so it doesn't crash during build prerendering
+  const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (user) {
