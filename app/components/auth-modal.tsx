@@ -143,7 +143,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
       onClick={() => setIsLogin(!isLogin)}
       className="text-cyber hover:text-white font-sans text-xs uppercase tracking-widest transition-colors"
      >
-      {isLogin ? "CRIAR SEU REGISTROagora" : "VOLTAR PARA LOGIN"}
+      {isLogin ? "CRIAR SEU REGISTRO AGORA" : "VOLTAR PARA LOGIN"}
      </button>
     </div>
    </div>

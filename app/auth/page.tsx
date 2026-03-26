@@ -2,189 +2,323 @@
 
 import { login, savePlanIntent, signup } from "@/app/actions/auth";
 import { usePlanIntent } from "@/store/plan-intent-store";
-import { ArrowRight, Eye, EyeOff, Home, Loader2, Terminal } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import { CyberTrailScene } from "../components/cyber-trail-scene";
-import { LandingMotion } from "../components/landing-motion";
+import { createClient } from "@/utils/supabase/client";
+import { createCheckout } from "@/utils/workspace/api";
+import type { BillingPlanCode } from "@/utils/workspace/types";
+import { ArrowRight, Eye, EyeOff, KeyRound, LoaderCircle, ShieldCheck, UserRound } from "lucide-react";
+import { useEffect, useState } from "react";
 
-const brandMark = "/design/CodeTrailMainIcon.png";
+const planCatalog: Record<
+  BillingPlanCode,
+  {
+    title: string;
+    price: string;
+    cadence: string;
+    summary: string;
+  }
+> = {
+  free: {
+    title: "Plano Free",
+    price: "R$ 0",
+    cadence: "/mês",
+    summary: "Estrutura base para sair do improviso e começar a usar o workspace.",
+  },
+  pro: {
+    title: "Plano Pro",
+    price: "R$ 19",
+    cadence: "/mês",
+    summary: "Checkout direto com recursos premium e expansão completa do sistema.",
+  },
+  founding: {
+    title: "Plano Founding",
+    price: "R$ 199",
+    cadence: "/único",
+    summary: "Acesso vitalício para quem entra cedo e quer manter o produto por perto.",
+  },
+};
 
 export default function AuthPage() {
- // We instantiate router but don't strictly use it in the success branch now,
- // though it might be used later. If it's unused, we can remove it. Let's just remove it if unused.
- // Actually, looking at the code, we replaced router.push with window.location.href.
- // So we can safely NOT import useRouter and NOT instantiate it.
- const { selectedPlan, clearIntent } = usePlanIntent();
+  const { selectedPlan, clearIntent } = usePlanIntent();
+  const [queryPlan, setQueryPlan] = useState<BillingPlanCode | null>(null);
+  const [target, setTarget] = useState<"workspace" | "download">("workspace");
+  const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
- const [isLogin, setIsLogin] = useState(true);
- const [isLoading, setIsLoading] = useState(false);
- const [errorMsg, setErrorMsg] = useState("");
- const [successMsg, setSuccessMsg] = useState("");
- const [showPassword, setShowPassword] = useState(false);
+  const activePlan = selectedPlan ?? queryPlan;
+  const activePlanMeta = activePlan ? planCatalog[activePlan] : null;
 
- async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-  e.preventDefault();
-  setIsLoading(true);
-  setErrorMsg("");
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setQueryPlan(parsePlan(params.get("plan")));
+    setTarget(params.get("target") === "download" ? "download" : "workspace");
+  }, []);
 
-  const formData = new FormData(e.currentTarget);
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsLoading(true);
+    setErrorMsg("");
+    setSuccessMsg("");
 
-  try {
-   const authResult = isLogin ? await login(formData) : await signup(formData);
+    const formData = new FormData(event.currentTarget);
 
-   if (authResult.error) {
-    setErrorMsg(authResult.error);
-    setIsLoading(false);
-    return;
-   }
+    try {
+      const authResult = isLogin ? await login(formData) : await signup(formData);
 
-   if (authResult.isSignup) {
-    setSuccessMsg("Registro concluído com sucesso! Verifique sua caixa de e-mail (e a pasta de SPAM) para confirmar a conta. Em seguida, faça o login abaixo.");
-    setIsLogin(true); // Switch to login form
-    setIsLoading(false);
-    return;
-   }
+      if (authResult.error) {
+        setErrorMsg(authResult.error);
+        setIsLoading(false);
+        return;
+      }
 
-   // If auth successful (login), save intent if exists
-   if (selectedPlan) {
-    const intentResult = await savePlanIntent(selectedPlan);
-    if (intentResult?.error) {
-     console.warn("Intent info:", intentResult.error);
+      if (authResult.isSignup) {
+        setSuccessMsg(
+          activePlan && activePlan !== "free"
+            ? "Conta criada. Confirme seu e-mail e depois faça login para concluir o checkout do plano."
+            : "Conta criada. Confirme seu e-mail e depois faça login para acessar o workspace.",
+        );
+        setIsLogin(true);
+        setIsLoading(false);
+        return;
+      }
+
+      if (activePlan) {
+        const intentResult = await savePlanIntent(activePlan);
+        if (intentResult?.error) {
+          console.error("Failed to save plan intent:", intentResult.error);
+        }
+        clearIntent();
+
+        if (activePlan === "free") {
+          window.location.assign(target === "download" ? "/download/windows" : "/workspace/dashboard");
+          return;
+        }
+
+        try {
+          const supabase = createClient();
+          const checkout = await createCheckout(supabase, activePlan);
+
+          if (checkout.checkoutUrl) {
+            window.location.assign(checkout.checkoutUrl);
+            return;
+          }
+
+          if (checkout.managementUrl) {
+            window.location.assign(checkout.managementUrl);
+            return;
+          }
+        } catch (error) {
+          if (isExistingSubscriptionError(error)) {
+            window.location.assign("/workspace/settings/billing");
+            return;
+          }
+
+          setErrorMsg(resolveBillingError(error));
+          return;
+        }
+
+        window.location.assign("/workspace/settings/billing");
+        return;
+      }
+
+      window.location.assign(target === "download" ? "/download/windows" : "/workspace/dashboard");
+    } catch (error) {
+      console.error(error);
+      setErrorMsg("Ocorreu um erro inesperado. Tente novamente.");
+    } finally {
+      setIsLoading(false);
     }
-    clearIntent();
-   }
-
-   window.location.href = "/download/windows"; // Hard redirect to ensure fresh cookies are sent
-  } catch (error) {
-   console.error(error);
-   setErrorMsg("Ocorreu um erro inesperado. Tente novamente.");
-  } finally {
-   setIsLoading(false);
   }
- }
 
- return (
-  <div className="app-container">
-   <LandingMotion />
-   <CyberTrailScene />
+  return (
+    <main className="workspace-auth workspace-auth--enhanced">
+      <div className="workspace-auth__panel">
+        <section className="workspace-auth__intro workspace-auth__intro--hero">
+          <span className="workspace-badge">CodeTrail Access</span>
+          <h1>Ative sua conta e continue seu fluxo sem perder contexto.</h1>
+          <p>
+            A autenticação conecta workspace, billing e histórico no mesmo backend. Você entra uma
+            vez e continua o produto inteiro com a mesma conta.
+          </p>
 
-   <nav className="cyber-nav">
-    <div className="layout-grid cyber-nav-inner">
-     <Link href="/" className="flex items-center gap-4">
-      <Image src={brandMark} alt="CodeTrail Logo" width={32} height={32} className="opacity-90 grayscale contrast-200" />
-      <div className="font-display font-bold text-xl text-cyber tracking-widest uppercase hidden md:block">
-       CodeTrail <span className="opacity-50 font-sans text-xs ml-2 tracking-normal">{"// SYSTEM.ONLINE"}</span>
+          <div className="workspace-auth__highlights workspace-auth__highlights--stacked">
+            <div>
+              <strong>Mesmo backend</strong>
+              <span>Supabase, billing e dados compartilhados entre web e Windows.</span>
+            </div>
+            <div>
+              <strong>Mesmo sistema</strong>
+              <span>Trilhas, sessões, tarefas, revisões, projetos e analytics no mesmo fluxo.</span>
+            </div>
+            <div>
+              <strong>Checkout integrado</strong>
+              <span>Planos pagos seguem para Stripe logo após o login, sem etapas quebradas.</span>
+            </div>
+          </div>
+
+          {activePlanMeta ? (
+            <div className="workspace-auth__plan-card">
+              <div>
+                <span className="workspace-auth__legend">
+                  <ShieldCheck size={14} />
+                  Plano selecionado
+                </span>
+                <strong>{activePlanMeta.title}</strong>
+                <p>{activePlanMeta.summary}</p>
+              </div>
+              <div className="workspace-plan-price">
+                {activePlanMeta.price}
+                <span>{activePlanMeta.cadence}</span>
+              </div>
+            </div>
+          ) : null}
+        </section>
+
+        <section className="workspace-auth__form-shell workspace-auth__form-shell--elevated">
+          <header className="workspace-auth__form-header">
+            <div>
+              <h2>{isLogin ? "Entrar" : "Criar conta"}</h2>
+              <p>
+                {isLogin
+                  ? target === "download"
+                    ? "Faça login para acessar o download e sincronizar o produto."
+                    : "Faça login para abrir seu workspace web."
+                  : "Crie sua conta para centralizar estudo, progresso e assinatura."}
+              </p>
+            </div>
+            {activePlanMeta ? (
+              <span className="workspace-pill workspace-pill--primary">{activePlanMeta.title}</span>
+            ) : null}
+          </header>
+
+          {errorMsg ? <div className="workspace-auth__error">{errorMsg}</div> : null}
+          {successMsg ? <div className="workspace-auth__success">{successMsg}</div> : null}
+
+          <form onSubmit={handleSubmit} className="workspace-auth__form">
+            <label className="workspace-field">
+              <span>E-mail</span>
+              <div className="workspace-auth__input">
+                <UserRound size={16} />
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="seu@email.com"
+                />
+              </div>
+            </label>
+
+            <label className="workspace-field">
+              <span>Senha</span>
+              <div className="workspace-auth__input">
+                <KeyRound size={16} />
+                <input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  minLength={6}
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((value) => !value)}
+                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </label>
+
+            <button className="workspace-button workspace-button--primary" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <LoaderCircle size={16} className="animate-spin" />
+                  Processando...
+                </>
+              ) : (
+                <>
+                  {isLogin ? "Entrar no sistema" : "Criar acesso"}
+                  <ArrowRight size={16} />
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="workspace-auth__steps">
+            <div className="workspace-auth__step">
+              <span>1</span>
+              <p>Autentique sua conta</p>
+            </div>
+            <div className="workspace-auth__step">
+              <span>2</span>
+              <p>{activePlan && activePlan !== "free" ? "Conclua o checkout do plano" : "Entre direto no workspace"}</p>
+            </div>
+            <div className="workspace-auth__step">
+              <span>3</span>
+              <p>Continue no mesmo backend da web e do Windows</p>
+            </div>
+          </div>
+
+          <footer className="workspace-auth__footer">
+            <span>{isLogin ? "Ainda não tem conta?" : "Já possui acesso?"}</span>
+            <button
+              className="workspace-button workspace-button--ghost"
+              onClick={() => setIsLogin((value) => !value)}
+            >
+              {isLogin ? "Criar conta" : "Voltar para login"}
+            </button>
+          </footer>
+        </section>
       </div>
-     </Link>
-     <Link href="/" className="text-text-secondary hover:text-cyber font-sans text-xs flex gap-2 items-center tracking-widest uppercase transition-colors">
-      <Home size={14} /> RETORNAR À NAVE MÃE
-     </Link>
-    </div>
-   </nav>
+    </main>
+  );
+}
 
-   <main className="content-layer">
-    <section className="min-h-screen flex flex-col justify-center items-center py-20 layout-grid relative">
+function parsePlan(plan: string | null): BillingPlanCode | null {
+  if (plan === "free" || plan === "pro" || plan === "founding") {
+    return plan;
+  }
 
-     <div className="hud-panel hud-reveal relative z-10 w-full max-w-md bg-[#030507]/90 border-[2px] border-cyber/30 shadow-[0_0_50px_rgba(0,240,255,0.05)] p-8 md:p-10">
+  return null;
+}
 
-      <div className="flex items-center gap-3 mb-8">
-       <Terminal className="text-cyber" size={28} />
-       <h2 className="text-white text-3xl font-display tracking-widest uppercase">
-        {isLogin ? "INICIALIZAR SESSÃO" : "CRIAR REGISTRO"}
-       </h2>
-      </div>
+function isExistingSubscriptionError(error: unknown) {
+  const message = readErrorMessage(error).toLowerCase();
+  return (
+    message.includes("already active") ||
+    message.includes("subscription is already active") ||
+    message.includes("paid subscription")
+  );
+}
 
-      {selectedPlan && (
-       <div className="cyber-badge mb-8 border-cyber/50 text-cyber w-full justify-center text-center py-3">
-        PLANO SELECIONADO: {selectedPlan.toUpperCase()}
-       </div>
-      )}
+function resolveBillingError(error: unknown) {
+  const message = readErrorMessage(error).toLowerCase();
 
-      {errorMsg && (
-       <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-4 text-xs font-sans uppercase tracking-wider mb-8 text-center">
-        {errorMsg}
-       </div>
-      )}
+  if (message.includes("founding plan is not available")) {
+    return "O plano Founding não está disponível para esta conta neste momento.";
+  }
 
-      {successMsg && (
-       <div className="bg-green-500/10 border border-green-500/50 text-green-400 p-6 text-sm font-sans uppercase tracking-wider mb-8 text-center leading-relaxed">
-        {successMsg}
-       </div>
-      )}
+  if (message.includes("customer record")) {
+    return "Seu cadastro ainda está sendo provisionado. Tente novamente em alguns segundos.";
+  }
 
-      {!successMsg && (
-       <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-         <label className="block text-xs font-sans text-text-secondary uppercase tracking-widest mb-3">
-          E-MAIL
-         </label>
-         <input
-          name="email"
-          type="email"
-          required
-          placeholder="seu@email.com"
-          className="w-full bg-black/50 border border-white/10 px-5 py-4 text-white focus:border-cyber focus:outline-none focus:ring-1 focus:ring-cyber/50 font-sans text-sm transition-all"
-         />
-        </div>
+  if (message.includes("checkout")) {
+    return "Não foi possível iniciar o checkout agora. Tente novamente ou acesse a área de cobrança.";
+  }
 
-        <div>
-         <label className="block text-xs font-sans text-text-secondary uppercase tracking-widest mb-3">
-          SENHA
-         </label>
-         <div className="relative">
-          <input
-           name="password"
-           type={showPassword ? "text" : "password"}
-           required
-           placeholder="••••••••"
-           minLength={6}
-           className="w-full bg-black/50 border border-white/10 px-5 py-4 pr-12 text-white focus:border-cyber focus:outline-none focus:ring-1 focus:ring-cyber/50 font-sans text-sm transition-all"
-          />
-          <button
-           type="button"
-           onClick={() => setShowPassword(!showPassword)}
-           className="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary hover:text-cyber transition-colors cursor-pointer"
-          >
-           {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-          </button>
-         </div>
-        </div>
+  return "Não foi possível iniciar a assinatura agora. Tente novamente.";
+}
 
-        <button
-         type="submit"
-         disabled={isLoading}
-         className="btn-cyber btn-cyber-primary w-full py-5 mt-4 disabled:opacity-50 disabled:cursor-not-allowed group flex justify-center items-center text-sm cursor-pointer"
-        >
-         {isLoading ? (
-          <Loader2 size={20} className="animate-spin text-white" />
-         ) : (
-          <>
-           {isLogin ? "AUTENTICAR" : "REGISTRAR NO SISTEMA"}
-           <ArrowRight size={20} className="ml-3 group-hover:translate-x-1 transition-transform" />
-          </>
-         )}
-        </button>
-       </form>
-      )}
+function readErrorMessage(error: unknown) {
+  if (error instanceof Error) {
+    return error.message;
+  }
 
-      <div className="mt-10 text-center border-t border-white/10 pt-8">
-       <p className="text-text-secondary font-sans text-xs uppercase tracking-widest mb-4">
-        {isLogin ? "NOVO RECRUTA?" : "JÁ POSSUI ACESSO?"}
-       </p>
-       <button
-        onClick={() => setIsLogin(!isLogin)}
-        className="text-cyber hover:text-white font-sans text-[11px] uppercase tracking-widest transition-colors py-2 px-4 border border-cyber/20 hover:border-cyber/60 rounded-sm"
-       >
-        {isLogin ? "CRIAR SEU REGISTRO AGORA" : "VOLTAR PARA LOGIN"}
-       </button>
-      </div>
+  if (typeof error === "object" && error && "message" in error) {
+    return String(error.message);
+  }
 
-     </div>
-
-    </section>
-   </main>
-  </div>
- );
+  return "";
 }

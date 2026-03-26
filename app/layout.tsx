@@ -1,7 +1,7 @@
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
-import { JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { JetBrains_Mono, Manrope, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
 const displayFont = Space_Grotesk({
@@ -11,6 +11,11 @@ const displayFont = Space_Grotesk({
 
 const bodyFont = JetBrains_Mono({
   variable: "--font-sans",
+  subsets: ["latin"],
+});
+
+const uiFont = Manrope({
+  variable: "--font-ui",
   subsets: ["latin"],
 });
 
@@ -36,7 +41,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${displayFont.variable} ${bodyFont.variable}`}>
+      <body className={`${displayFont.variable} ${bodyFont.variable} ${uiFont.variable}`}>
         {children}
         <Analytics />
         <SpeedInsights />
