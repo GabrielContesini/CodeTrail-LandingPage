@@ -28,12 +28,25 @@ export function AuthTrigger({
     onClick?.(event);
 
     setIntent(plan ?? null);
+    const authHref = buildAuthHref(plan, target);
 
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    const authParams = new URLSearchParams();
+    if (!hasSupabasePublicConfig()) {
+      router.push(authHref);
+      return;
+    }
+
+    let user: { id: string } | null = null;
+    let supabase: ReturnType<typeof createClient> | null = null;
+
+    try {
+      supabase = createClient();
+      const response = await supabase.auth.getUser();
+      user = response.data.user;
+    } catch (error) {
+      console.error("Failed to resolve auth state from landing CTA:", error);
+      router.push(authHref);
+      return;
+    }
 
     if (user) {
       if (plan) {
@@ -76,21 +89,37 @@ export function AuthTrigger({
       return;
     }
 
-    if (plan) {
-      authParams.set("plan", plan);
-    }
-
-    if (target !== "workspace") {
-      authParams.set("target", target);
-    }
-
-    router.push(authParams.size ? `/auth?${authParams.toString()}` : "/auth");
+    router.push(authHref);
   };
 
   return (
-    <button onClick={handleTrigger} className={className}>
+    <button type="button" onClick={handleTrigger} className={className}>
       {children}
     </button>
+  );
+}
+
+function buildAuthHref(
+  plan: BillingPlanCode | undefined,
+  target: "workspace" | "download",
+) {
+  const params = new URLSearchParams();
+
+  if (plan) {
+    params.set("plan", plan);
+  }
+
+  if (target !== "workspace") {
+    params.set("target", target);
+  }
+
+  return params.size ? `/auth?${params.toString()}` : "/auth";
+}
+
+function hasSupabasePublicConfig() {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   );
 }
 
