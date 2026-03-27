@@ -15,6 +15,9 @@ import { IntentProcessor } from "./intent-processor";
 
 const brandMark = "/design/CodeTrailMainIcon.png";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function DownloadWindows() {
   const supabase = await createClient();
   const {
