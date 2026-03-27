@@ -25,3 +25,7 @@ jobs:
 
       - name: Run validation
         run: npm run check
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://example.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'test-anon-key' }}
+          NEXT_PUBLIC_CODETRAIL_WEB_URL: ${{ secrets.NEXT_PUBLIC_CODETRAIL_WEB_URL || 'https://codetrail.site' }}

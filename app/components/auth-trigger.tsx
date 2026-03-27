@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle, ArrowRight, ShieldCheck, Sparkles, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import {
   buildCodeTrailWebEntryHref,
@@ -35,7 +35,7 @@ export function AuthTrigger({
   target?: "workspace" | "download";
   onClick?: (event: React.MouseEvent) => void;
 }) {
-  const [supabase] = useState(() => createClient());
+  const supabaseRef = useRef<ReturnType<typeof createClient> | null>(null);
   const [checkingPlan, setCheckingPlan] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
   const [activePaidPlan, setActivePaidPlan] = useState<BillingPlanCode | null>(null);
@@ -67,6 +67,21 @@ export function AuthTrigger({
     };
   }, [warningOpen]);
 
+  function getSupabaseClient() {
+    if (
+      !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+      !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    ) {
+      return null;
+    }
+
+    if (!supabaseRef.current) {
+      supabaseRef.current = createClient();
+    }
+
+    return supabaseRef.current;
+  }
+
   const handleTrigger = async (event: React.MouseEvent) => {
     event.preventDefault();
     onClick?.(event);
@@ -82,6 +97,12 @@ export function AuthTrigger({
     setActivePaidPlan(null);
 
     try {
+      const supabase = getSupabaseClient();
+      if (!supabase) {
+        window.location.assign(checkoutHref);
+        return;
+      }
+
       const {
         data: { session },
       } = await supabase.auth.getSession();
