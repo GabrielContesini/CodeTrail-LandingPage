@@ -436,16 +436,17 @@ export function WorkspaceProvider({
     setRefreshing(true);
     setError(null);
     try {
-      const response = await createCheckout(supabase, planCode);
-      if (response.checkoutUrl) {
-        window.location.assign(response.checkoutUrl);
-        return;
+      const response = await createCheckout(
+        supabase,
+        planCode,
+        undefined,
+        `${window.location.origin}/workspace/settings/billing`,
+      );
+      const redirectUrl = response.checkoutUrl ?? response.managementUrl;
+      if (!redirectUrl) {
+        throw new Error("Nao foi possivel abrir o checkout agora.");
       }
-      if (response.managementUrl) {
-        window.location.assign(response.managementUrl);
-        return;
-      }
-      await reload();
+      window.location.assign(redirectUrl);
     } catch (nextError) {
       setError(nextError instanceof Error ? nextError.message : "Falha no checkout.");
       throw nextError;
@@ -458,7 +459,10 @@ export function WorkspaceProvider({
     setRefreshing(true);
     setError(null);
     try {
-      const url = await createPortalSession(supabase);
+      const url = await createPortalSession(
+        supabase,
+        `${window.location.origin}/workspace/settings/billing`,
+      );
       window.location.assign(url);
     } catch (nextError) {
       setError(nextError instanceof Error ? nextError.message : "Falha no portal.");

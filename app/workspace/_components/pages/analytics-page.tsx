@@ -12,12 +12,12 @@ export function AnalyticsPage() {
   const analytics = data!.analyticsSummary;
 
   if (!data!.featureAccess.analytics) {
-    return <LockedFeaturePage title="Analytics premium bloqueado" feature="Analytics" />;
+    return <LockedFeaturePage title="Análises premium bloqueadas" feature="Análises" />;
   }
 
   return (
     <PageFrame
-      title="Analytics"
+      title="Análises"
       subtitle="Consistência, volume e evolução da trilha em números, usando os mesmos dados do workspace desktop."
     >
       <SectionGrid columns={4}>

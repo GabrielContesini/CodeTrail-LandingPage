@@ -1,6 +1,8 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import { createCheckoutSessionOnServer } from "@/utils/workspace/server-billing";
+import type { BillingPlanCode } from "@/utils/workspace/types";
 import { redirect } from "next/navigation";
 
 function getAuthError(error: Error | unknown) {
@@ -38,6 +40,75 @@ export async function login(formData: FormData) {
  }
 }
 
+export async function loginAndContinue(
+ formData: FormData,
+ options?: {
+  selectedPlan?: string | null
+  target?: "workspace" | "download"
+ }
+) {
+ let supabase: Awaited<ReturnType<typeof createClient>>;
+
+ try {
+  supabase = await createClient();
+ } catch (error) {
+  return { error: getAuthError(error) };
+ }
+
+ const email = formData.get("email") as string;
+ const password = formData.get("password") as string;
+
+ const { data, error } = await supabase.auth.signInWithPassword({
+  email,
+  password,
+ });
+
+ if (error) {
+  return { error: getAuthError(error) };
+ }
+
+ const selectedPlan = parsePlanCode(options?.selectedPlan ?? null);
+ const target = options?.target === "download" ? "download" : "workspace";
+
+ if (selectedPlan) {
+  const intentResult = await persistPlanIntent(supabase, selectedPlan);
+  if (intentResult?.error) {
+   return intentResult;
+  }
+ }
+
+ if (selectedPlan === "pro" || selectedPlan === "founding") {
+  let checkout;
+
+  try {
+   checkout = await createCheckoutSessionOnServer(
+    selectedPlan,
+    data.session?.access_token ?? null,
+   );
+  } catch (error) {
+   return {
+    error: error instanceof Error ? error.message : "Nao foi possivel iniciar a assinatura agora.",
+   };
+  }
+
+  if (checkout.checkoutUrl) {
+   redirect(checkout.checkoutUrl);
+  }
+
+  if (checkout.managementUrl) {
+   redirect(checkout.managementUrl);
+  }
+
+  redirect(target === "download" ? "/download/windows" : "/workspace/settings/billing");
+ }
+
+ if (selectedPlan === "free") {
+  redirect(target === "download" ? "/download/windows" : "/workspace/dashboard");
+ }
+
+ redirect(target === "download" ? "/download/windows" : "/workspace/dashboard");
+}
+
 export async function signup(formData: FormData) {
  try {
   const supabase = await createClient();
@@ -68,33 +139,7 @@ export async function signup(formData: FormData) {
 export async function savePlanIntent(selectedPlan: string) {
  try {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
-   return { error: "User not authenticated" };
-  }
-
-  if (selectedPlan && ["free", "pro", "founding"].includes(selectedPlan)) {
-   const { error } = await supabase
-    .from("plan_intents")
-    .insert({
-     user_id: user.id,
-     selected_plan: selectedPlan,
-     source: "landing_page",
-     platform_interest: "windows",
-     status: "interested",
-    });
-
-   if (error) {
-    // Ignore table not found errors gracefully so it doesn't break the user's flow
-    if (error.message.includes("Could not find the table") || error.code === '42P01') {
-     return { success: true, warning: 'Table plan_intents not found' };
-    }
-    return { error: error.message };
-   }
-  }
-
-  return { success: true };
+  return await persistPlanIntent(supabase, selectedPlan);
  } catch (error) {
   return { error: getAuthError(error) };
  }
@@ -104,4 +149,41 @@ export async function logout() {
  const supabase = await createClient();
  await supabase.auth.signOut();
  redirect("/");
+}
+
+async function persistPlanIntent(supabase: Awaited<ReturnType<typeof createClient>>, selectedPlan: string) {
+ const { data: { user } } = await supabase.auth.getUser();
+
+ if (!user) {
+  return { error: "User not authenticated" };
+ }
+
+ if (selectedPlan && ["free", "pro", "founding"].includes(selectedPlan)) {
+  const { error } = await supabase
+   .from("plan_intents")
+   .insert({
+    user_id: user.id,
+    selected_plan: selectedPlan,
+    source: "landing_page",
+    platform_interest: "windows",
+    status: "interested",
+   });
+
+  if (error) {
+   if (error.message.includes("Could not find the table") || error.code === '42P01') {
+    return { success: true, warning: "Table plan_intents not found" };
+   }
+   return { error: error.message };
+  }
+ }
+
+ return { success: true };
+}
+
+function parsePlanCode(selectedPlan: string | null): BillingPlanCode | null {
+ if (selectedPlan === "free" || selectedPlan === "pro" || selectedPlan === "founding") {
+  return selectedPlan;
+ }
+
+ return null;
 }

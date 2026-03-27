@@ -229,14 +229,14 @@ function Scene() {
 
 export function HeroSmokeScene() {
   return (
-    <div className="hero-canvas-shell" aria-hidden="true">
+    <div className="fixed inset-0 w-full h-full z-0 pointer-events-none opacity-80 mix-blend-screen" aria-hidden="true">
       <Canvas
         camera={{ position: [0, 0.2, 8.5], fov: 42 }}
         gl={{ alpha: true, antialias: true }}
       >
         <Scene />
       </Canvas>
-      <div className="hero-canvas-vignette" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,var(--background)_100%)] pointer-events-none" />
     </div>
   );
 }

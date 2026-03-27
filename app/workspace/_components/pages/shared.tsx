@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Sparkles } from "lucide-react";
 import { useWorkspace } from "@/app/workspace/_components/workspace-provider";
@@ -22,13 +23,13 @@ export function QuickAction({
   icon: React.ReactNode;
 }) {
   return (
-    <button className="workspace-quick-action" onClick={() => window.location.assign(href)}>
+    <Link className="workspace-quick-action" href={href}>
       <div className="workspace-quick-action__icon">{icon}</div>
       <div>
         <strong>{title}</strong>
         <span>{subtitle}</span>
       </div>
-    </button>
+    </Link>
   );
 }
 

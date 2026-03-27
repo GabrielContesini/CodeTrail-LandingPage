@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Activity,
   BookOpen,
@@ -53,6 +53,7 @@ function cx(...parts: Array<string | false | null | undefined>) {
 
 export function WorkspaceShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { data, user, refreshing, reload, signOut } = useWorkspace();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -135,7 +136,7 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
             className={collapsed ? "workspace-button--icon" : undefined}
             onClick={() => {
               setMobileNavOpen(false);
-              window.location.assign("/workspace/sessions");
+              router.push("/workspace/sessions");
             }}
           >
             {collapsed ? <BookOpen size={18} /> : "Nova sessão"}
@@ -185,7 +186,7 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
                   <IconButton
                     onClick={() => {
                       setMobileNavOpen(false);
-                      window.location.assign("/workspace/settings");
+                      router.push("/workspace/settings");
                     }}
                   >
                     <Settings size={16} />
@@ -201,7 +202,7 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
               <IconButton
                 onClick={() => {
                   setMobileNavOpen(false);
-                  window.location.assign("/workspace/settings");
+                  router.push("/workspace/settings");
                 }}
               >
                 <Settings size={16} />
@@ -247,7 +248,7 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
               <Target size={14} />
               Plano {currentPlan.toUpperCase()}
             </Pill>
-            <SecondaryButton onClick={() => window.location.assign("/workspace/settings")}>
+            <SecondaryButton onClick={() => router.push("/workspace/settings")}>
               <Settings size={16} />
               Ajustes
             </SecondaryButton>

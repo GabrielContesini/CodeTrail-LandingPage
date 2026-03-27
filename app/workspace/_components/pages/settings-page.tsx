@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useWorkspace } from "@/app/workspace/_components/workspace-provider";
 import {
   DataCard,
@@ -19,6 +20,7 @@ import type { AppSettingsRow, ProfileRow, UserGoalRow } from "@/utils/workspace/
 import { useState } from "react";
 
 export function SettingsPage() {
+  const router = useRouter();
   const { data, user, saveProfile, saveGoal, saveSettings } = useWorkspace();
   const [profileOpen, setProfileOpen] = useState(false);
   const [goalOpen, setGoalOpen] = useState(false);
@@ -127,7 +129,7 @@ export function SettingsPage() {
                 <PrimaryButton onClick={() => setPrefsOpen(true)}>
                   Editar preferências
                 </PrimaryButton>
-                <SecondaryButton onClick={() => window.location.assign("/workspace/settings/billing")}>
+                <SecondaryButton onClick={() => router.push("/workspace/settings/billing")}>
                   Plano e cobrança
                 </SecondaryButton>
               </div>

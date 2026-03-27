@@ -1,152 +1,165 @@
 "use client";
 
 import { login, savePlanIntent, signup } from "@/app/actions/auth";
+import {
+  ActionButton,
+  FeedbackMessage,
+  FormField,
+  SectionHeader,
+  StatusBadge,
+  Surface,
+} from "@/app/components/ui/system-primitives";
 import { usePlanIntent } from "@/store/plan-intent-store";
-import { ArrowRight, Loader2, Terminal, X } from "lucide-react";
+import { ArrowRight, Loader2, X } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+const brandMark = "/design/CodeTrailMainIcon.png";
+
 interface AuthModalProps {
- isOpen: boolean;
- onClose: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export function AuthModal({ isOpen, onClose }: AuthModalProps) {
- const router = useRouter();
- const { selectedPlan, clearIntent } = usePlanIntent();
+  const router = useRouter();
+  const { selectedPlan, clearIntent } = usePlanIntent();
+  const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
- const [isLogin, setIsLogin] = useState(true);
- const [isLoading, setIsLoading] = useState(false);
- const [errorMsg, setErrorMsg] = useState("");
+  if (!isOpen) return null;
 
- if (!isOpen) return null;
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsLoading(true);
+    setErrorMsg("");
 
- async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-  e.preventDefault();
-  setIsLoading(true);
-  setErrorMsg("");
+    const formData = new FormData(event.currentTarget);
 
-  const formData = new FormData(e.currentTarget);
+    try {
+      const authResult = isLogin ? await login(formData) : await signup(formData);
 
-  try {
-   const authResult = isLogin ? await login(formData) : await signup(formData);
+      if (authResult.error) {
+        setErrorMsg(authResult.error);
+        setIsLoading(false);
+        return;
+      }
 
-   if (authResult.error) {
-    setErrorMsg(authResult.error);
-    setIsLoading(false);
-    return;
-   }
+      if (selectedPlan) {
+        const intentResult = await savePlanIntent(selectedPlan);
+        if (intentResult?.error) {
+          console.error("Failed to save plan intent:", intentResult.error);
+        }
+        clearIntent();
+      }
 
-   // If auth successful, save intent if exists
-   if (selectedPlan) {
-    const intentResult = await savePlanIntent(selectedPlan);
-    if (intentResult?.error) {
-     console.error("Failed to save plan intent:", intentResult.error);
-     // Non-blocking error, user is still authenticated
+      router.push("/download/windows");
+      onClose();
+    } catch (error) {
+      console.error(error);
+      setErrorMsg("Ocorreu um erro inesperado. Tente novamente.");
+    } finally {
+      setIsLoading(false);
     }
-    clearIntent();
-   }
-
-   router.push("/download/windows");
-   onClose();
-  } catch (error) {
-   console.error(error);
-   setErrorMsg("Ocorreu um erro inesperado. Tente novamente.");
-  } finally {
-   setIsLoading(false);
   }
- }
 
- return (
-  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-   <div
-    className="absolute inset-0 z-0"
-    onClick={onClose}
-   />
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/82 p-4 backdrop-blur-md">
+      <div className="absolute inset-0" onClick={onClose} />
 
-   <div className="hud-panel relative z-10 w-full max-w-md bg-[#030507] border-cyber/30 shadow-[0_0_30px_rgba(0,240,255,0.1)] p-8">
-    <button
-     onClick={onClose}
-     className="absolute top-4 right-4 text-text-secondary hover:text-cyber transition-colors"
-    >
-     <X size={20} />
-    </button>
+      <Surface tone="glass" className="relative z-10 w-full max-w-xl p-6 sm:p-8">
+        <button
+          type="button"
+          onClick={onClose}
+          className="touch-target absolute right-4 top-4 inline-flex items-center justify-center rounded-full border border-transparent p-2 text-text-secondary transition-[color,background-color,border-color] duration-200 hover:border-border/80 hover:bg-white/[0.05] hover:text-white"
+          aria-label="Fechar modal de autenticação"
+        >
+          <X size={18} />
+        </button>
 
-    <div className="flex items-center gap-3 mb-6">
-     <Terminal className="text-cyber" size={24} />
-     <h2 className="text-white text-2xl font-display tracking-widest uppercase">
-      {isLogin ? "INICIALIZAR SESSÃO" : "CRIAR REGISTRO"}
-     </h2>
+        <div className="mb-8 flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border border-primary/20 bg-primary/10 shadow-[0_0_18px_rgba(50,208,255,0.16)]">
+            <Image src={brandMark} alt="CodeTrail" width={40} height={40} className="h-full w-full object-cover" />
+          </div>
+          <div className="flex flex-col">
+            <strong className="font-display text-base tracking-tight text-white">CodeTrail</strong>
+            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary/80">Acesso da landing</span>
+          </div>
+        </div>
+
+        <SectionHeader
+          eyebrow="Entrada rápida"
+          title={isLogin ? "Acesse sua conta" : "Crie sua conta"}
+          subtitle={
+            isLogin
+              ? "Continue para o fluxo certo do produto mantendo o contexto do seu plano."
+              : "Crie seu acesso e siga para a próxima etapa do ecossistema CodeTrail."
+          }
+          actions={selectedPlan ? <StatusBadge tone="primary">Plano {selectedPlan}</StatusBadge> : null}
+        />
+
+        {errorMsg ? (
+          <FeedbackMessage
+            tone="error"
+            title="Falha na autenticação"
+            message={errorMsg}
+            className="mt-6"
+          />
+        ) : null}
+
+        <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-5">
+          <FormField label="E-mail">
+            <input
+              name="email"
+              type="email"
+              required
+              placeholder="voce@codetrail.site"
+              className="input-shell"
+            />
+          </FormField>
+
+          <FormField label="Senha" helper="Use a mesma credencial para seguir no ecossistema CodeTrail.">
+            <input
+              name="password"
+              type="password"
+              required
+              minLength={6}
+              placeholder="Digite sua senha"
+              className="input-shell"
+            />
+          </FormField>
+
+          <ActionButton type="submit" disabled={isLoading} className="mt-2 w-full">
+            {isLoading ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                Processando...
+              </>
+            ) : (
+              <>
+                {isLogin ? "Entrar e continuar" : "Criar conta"}
+                <ArrowRight size={16} />
+              </>
+            )}
+          </ActionButton>
+        </form>
+
+        <div className="mt-8 border-t border-border/60 pt-6">
+          <p className="text-sm text-text-secondary">
+            {isLogin ? "Ainda não tem conta?" : "Já possui acesso?"}
+          </p>
+          <ActionButton
+            type="button"
+            variant="ghost"
+            onClick={() => setIsLogin((value) => !value)}
+            className="mt-3 px-0"
+          >
+            {isLogin ? "Criar conta agora" : "Voltar para login"}
+          </ActionButton>
+        </div>
+      </Surface>
     </div>
-
-    {selectedPlan && (
-     <div className="cyber-badge mb-6 border-cyber/30 text-cyber/80 w-full justify-center">
-      PLANO SELECIONADO: {selectedPlan.toUpperCase()}
-     </div>
-    )}
-
-    {errorMsg && (
-     <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-3 text-xs font-sans uppercase tracking-wider mb-6">
-      ERRO: {errorMsg}
-     </div>
-    )}
-
-    <form onSubmit={handleSubmit} className="space-y-4">
-     <div>
-      <label className="block text-xs font-sans text-text-secondary uppercase tracking-widest mb-2">
-       E-MAIL OPERACIONAL
-      </label>
-      <input
-       name="email"
-       type="email"
-       required
-       placeholder="seu@email.com"
-       className="w-full bg-black/50 border border-white/10 px-4 py-3 text-white focus:border-cyber focus:outline-none focus:ring-1 focus:ring-cyber/50 font-sans text-sm transition-all"
-      />
-     </div>
-
-     <div>
-      <label className="block text-xs font-sans text-text-secondary uppercase tracking-widest mb-2">
-       CHAVE DE ENCRIPTAÇÃO
-      </label>
-      <input
-       name="password"
-       type="password"
-       required
-       placeholder="••••••••"
-       minLength={6}
-       className="w-full bg-black/50 border border-white/10 px-4 py-3 text-white focus:border-cyber focus:outline-none focus:ring-1 focus:ring-cyber/50 font-sans text-sm transition-all"
-      />
-     </div>
-
-     <button
-      type="submit"
-      disabled={isLoading}
-      className="btn-cyber btn-cyber-primary w-full py-4 mt-4 disabled:opacity-50 disabled:cursor-not-allowed group flex justify-center items-center"
-     >
-      {isLoading ? (
-       <Loader2 size={18} className="animate-spin text-white" />
-      ) : (
-       <>
-        {isLogin ? "AUTENTICAR" : "REGISTRAR NO SISTEMA"}
-        <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
-       </>
-      )}
-     </button>
-    </form>
-
-    <div className="mt-8 text-center border-t border-white/10 pt-6">
-     <p className="text-text-secondary font-sans text-xs uppercase tracking-widest mb-3">
-      {isLogin ? "NOVO RECRUTA?" : "JÁ POSSUI ACESSO?"}
-     </p>
-     <button
-      onClick={() => setIsLogin(!isLogin)}
-      className="text-cyber hover:text-white font-sans text-xs uppercase tracking-widest transition-colors"
-     >
-      {isLogin ? "CRIAR SEU REGISTRO AGORA" : "VOLTAR PARA LOGIN"}
-     </button>
-    </div>
-   </div>
-  </div>
- );
+  );
 }

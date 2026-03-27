@@ -234,26 +234,19 @@ export async function fetchBillingSnapshot(
 export async function createCheckout(
   supabase: SupabaseClient,
   planCode: BillingPlanCode,
+  accessToken?: string | null,
+  returnUrl?: string | null,
 ) {
-  const { data, error } = await supabase.functions.invoke("billing-create-checkout", {
-    body: { planCode },
-  });
-  if (error) {
-    throw new Error(extractFunctionError(error));
-  }
-  return data as BillingCheckoutSession;
+  const sessionToken = accessToken ?? (await supabase.auth.getSession()).data.session?.access_token ?? null;
+  return await createCheckoutWithAccessToken(planCode, sessionToken, returnUrl);
 }
 
-export async function createPortalSession(supabase: SupabaseClient) {
-  const { data, error } = await supabase.functions.invoke(
+export async function createPortalSession(supabase: SupabaseClient, returnUrl?: string | null) {
+  const data = await invokeBillingFunction<{ url?: string }>(
+    supabase,
     "billing-create-portal-session",
-    {
-      body: {},
-    },
+    returnUrl ? { returnUrl } : {},
   );
-  if (error) {
-    throw new Error(extractFunctionError(error));
-  }
   const url = (data as { url?: string } | null)?.url;
   if (!url) {
     throw new Error("Resposta inválida ao criar sessão do portal.");
@@ -262,15 +255,11 @@ export async function createPortalSession(supabase: SupabaseClient) {
 }
 
 export async function cancelSubscription(supabase: SupabaseClient) {
-  const { data, error } = await supabase.functions.invoke(
+  const data = await invokeBillingFunction<{ snapshot?: BillingSnapshot }>(
+    supabase,
     "billing-cancel-subscription",
-    {
-      body: {},
-    },
+    {},
   );
-  if (error) {
-    throw new Error(extractFunctionError(error));
-  }
   const snapshot = (data as { snapshot?: BillingSnapshot } | null)?.snapshot;
   if (!snapshot) {
     throw new Error("Resposta inválida ao cancelar assinatura.");
@@ -279,12 +268,11 @@ export async function cancelSubscription(supabase: SupabaseClient) {
 }
 
 export async function syncBillingSubscription(supabase: SupabaseClient) {
-  const { data, error } = await supabase.functions.invoke("billing-sync-subscription", {
-    body: {},
-  });
-  if (error) {
-    throw new Error(extractFunctionError(error));
-  }
+  const data = await invokeBillingFunction<{ snapshot?: BillingSnapshot }>(
+    supabase,
+    "billing-sync-subscription",
+    {},
+  );
   const snapshot = (data as { snapshot?: BillingSnapshot } | null)?.snapshot;
   if (!snapshot) {
     throw new Error("Resposta inválida ao sincronizar assinatura.");
@@ -324,14 +312,74 @@ async function maybeSingle<T>(
   return data;
 }
 
-function extractFunctionError(error: unknown) {
-  if (typeof error === "object" && error && "message" in error) {
-    return String(error.message);
-  }
-  return "Falha ao executar a operação.";
-}
-
 function errorMessage(error: unknown) {
   if (error instanceof Error) return error.message;
   return "Erro inesperado ao carregar o workspace.";
+}
+
+async function createCheckoutWithAccessToken(
+  planCode: BillingPlanCode,
+  accessToken: string | null,
+  returnUrl?: string | null,
+) {
+  return await invokeBillingFunction<BillingCheckoutSession>(
+    null,
+    "billing-create-checkout",
+    returnUrl ? { planCode, returnUrl } : { planCode },
+    accessToken,
+  );
+}
+
+function readBillingErrorPayload(payload: unknown) {
+  if (!payload || typeof payload !== "object") {
+    return "";
+  }
+
+  if ("error" in payload && payload.error) {
+    return String(payload.error);
+  }
+
+  if ("message" in payload && payload.message) {
+    return String(payload.message);
+  }
+
+  return "";
+}
+
+async function invokeBillingFunction<T>(
+  supabase: SupabaseClient | null,
+  functionName: string,
+  body: Record<string, unknown>,
+  accessToken?: string | null,
+) {
+  const resolvedAccessToken =
+    accessToken ??
+    (supabase ? (await supabase.auth.getSession()).data.session?.access_token ?? null : null);
+
+  if (!resolvedAccessToken) {
+    throw new Error("Sessao expirada. Faca login novamente.");
+  }
+
+  const gatewayToken = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/${functionName}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${gatewayToken}`,
+        "x-supabase-auth": `Bearer ${resolvedAccessToken}`,
+        apikey: gatewayToken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    },
+  );
+
+  const payload = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(readBillingErrorPayload(payload) || `Request failed with status ${response.status}.`);
+  }
+
+  return payload as T;
 }

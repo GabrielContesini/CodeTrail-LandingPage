@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   Bolt,
   BookOpen,
@@ -25,6 +26,7 @@ import { formatDateTime, formatPercent, labelForSessionType, planCode } from "@/
 import { PriorityRow, QueuePanel, QuickAction, SnapshotTile } from "@/app/workspace/_components/pages/shared";
 
 export function DashboardPage() {
+  const router = useRouter();
   const { data } = useWorkspace();
   const summary = data!.dashboardSummary;
   const billing = data!.billing;
@@ -35,16 +37,16 @@ export function DashboardPage() {
   const tracks = data!.trackBlueprints.slice(0, 4);
 
   return (
-    <PageFrame
+        <PageFrame
       title="Dashboard"
       subtitle="Uma visão editorial do workspace: foco, fila de execução e progresso prático em uma superfície única."
       actions={
         <>
-          <SecondaryButton onClick={() => window.location.assign("/workspace/analytics")}>
+          <SecondaryButton onClick={() => router.push("/workspace/analytics")}>
             <LayoutGrid size={16} />
-            Analytics
+            Análises
           </SecondaryButton>
-          <PrimaryButton onClick={() => window.location.assign("/workspace/sessions")}>
+          <PrimaryButton onClick={() => router.push("/workspace/sessions")}>
             Nova sessão
           </PrimaryButton>
         </>
@@ -136,7 +138,7 @@ export function DashboardPage() {
               </p>
             </div>
             <div className="workspace-inline-actions">
-              <SecondaryButton onClick={() => window.location.assign("/workspace/settings/billing")}>
+              <SecondaryButton onClick={() => router.push("/workspace/settings/billing")}>
                 Gerenciar plano
               </SecondaryButton>
               <Pill tone={currentPlan === "free" ? "warning" : "success"}>
