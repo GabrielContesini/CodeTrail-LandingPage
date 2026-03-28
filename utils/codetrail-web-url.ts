@@ -97,7 +97,13 @@ function normalizeOrigin(value?: string | null) {
   }
 
   try {
-    return new URL(value).origin;
+    const url = new URL(value);
+
+    if (url.hostname === "www.codetrail.online") {
+      url.hostname = "codetrail.online";
+    }
+
+    return url.origin;
   } catch {
     return null;
   }
