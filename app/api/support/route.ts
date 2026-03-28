@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { checkRateLimit, getClientIp } from "@/utils/server/rate-limit";
+import { createSupportClickUpTask } from "@/utils/server/clickup-support";
 import { sendSupportEmail } from "@/utils/server/support";
 import { sanitizeSupportInput, validateSupportInput } from "@/utils/support/shared";
 
@@ -76,6 +77,35 @@ export async function POST(request: Request) {
       request,
       userPlan: "Visitante / Landing Page",
     });
+    let clickUpMeta:
+      | {
+          created: true;
+          taskId: string | null;
+          taskUrl: string | null;
+        }
+      | {
+          created: false;
+          skippedReason: string;
+        }
+      | null = null;
+
+    try {
+      clickUpMeta = await createSupportClickUpTask({
+        input,
+        userPlan: "Visitante / Landing Page",
+        requestId,
+      });
+    } catch (error) {
+      logSupportEvent({
+        level: "warn",
+        event: "clickup_task_failed",
+        requestId,
+        metadata: {
+          origin: input.origin,
+          message: error instanceof Error ? error.message : "unknown",
+        },
+      });
+    }
 
     logSupportEvent({
       event: "message_sent",
@@ -87,6 +117,8 @@ export async function POST(request: Request) {
         userPlan: "Visitante / Landing Page",
         browser: emailMeta.browser,
         operatingSystem: emailMeta.operatingSystem,
+        clickUpTaskId: clickUpMeta?.created ? clickUpMeta.taskId : null,
+        clickUpSkippedReason: clickUpMeta && !clickUpMeta.created ? clickUpMeta.skippedReason : null,
       },
     });
 
