@@ -1,7 +1,15 @@
 "use client";
 
+import { GoogleAuthButton } from "@/app/components/auth/google-auth-button";
 import { usePlanIntent } from "@/store/plan-intent-store";
-import { createClient } from "@/utils/supabase/client";
+import {
+  buildGoogleCallbackUrl,
+  getAuthErrorMessage,
+  parseAuthFlowTarget,
+  parseAuthPlan,
+} from "@/utils/auth/oauth";
+import { persistPlanIntent as persistPlanIntentRecord } from "@/utils/auth/plan-intent";
+import { createClient, hasSupabaseClientEnv } from "@/utils/supabase/client";
 import { createCheckout } from "@/utils/workspace/api";
 import type { BillingPlanCode } from "@/utils/workspace/types";
 import { FeedbackMessage } from "@/app/components/ui/system-primitives";
@@ -56,6 +64,7 @@ export default function AuthPage() {
   const [target, setTarget] = useState<"workspace" | "download">("workspace");
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -65,9 +74,9 @@ export default function AuthPage() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    setQueryPlan(parsePlan(params.get("plan")));
-    setTarget(params.get("target") === "download" ? "download" : "workspace");
-    setErrorMsg(params.get("billing_error") ?? "");
+    setQueryPlan(parseAuthPlan(params.get("plan")));
+    setTarget(parseAuthFlowTarget(params.get("target")));
+    setErrorMsg(params.get("auth_error") ?? params.get("billing_error") ?? "");
   }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -95,7 +104,12 @@ export default function AuthPage() {
         }
 
         if (activePlan) {
-          await persistPlanIntent(supabase, activePlan, data.user?.id ?? null);
+          await persistPlanIntentForLanding(
+            supabase,
+            activePlan,
+            target,
+            data.user?.id ?? null,
+          );
         }
 
         if (activePlan === "pro" || activePlan === "founding") {
@@ -160,6 +174,48 @@ export default function AuthPage() {
       setErrorMsg(error instanceof Error ? error.message : "Ocorreu um erro inesperado. Tente novamente.");
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function handleGoogleAuth() {
+    setIsGoogleLoading(true);
+    setErrorMsg("");
+    setSuccessMsg("");
+
+    if (!hasSupabaseClientEnv()) {
+      setErrorMsg("O login com Google ainda nao esta habilitado neste ambiente do CodeTrail.");
+      setIsGoogleLoading(false);
+      return;
+    }
+
+    const supabase = createClient();
+
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: buildGoogleCallbackUrl({
+            origin: window.location.origin,
+            plan: activePlan,
+            target,
+            source: "page",
+          }),
+          queryParams: {
+            prompt: "select_account",
+          },
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data.url) {
+        throw new Error("Nao foi possivel iniciar o login com Google.");
+      }
+    } catch (error) {
+      setErrorMsg(getAuthErrorMessage(error));
+      setIsGoogleLoading(false);
     }
   }
 
@@ -257,6 +313,21 @@ export default function AuthPage() {
                 />
               ) : null}
 
+              <div className="flex flex-col gap-4">
+                <GoogleAuthButton
+                  label={isLogin ? "Entrar com Google" : "Criar conta com Google"}
+                  loading={isGoogleLoading}
+                  onClick={handleGoogleAuth}
+                />
+                <div className="flex items-center gap-3">
+                  <span className="h-px flex-1 bg-border/60" aria-hidden="true" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-text-secondary">
+                    ou continue com e-mail
+                  </span>
+                  <span className="h-px flex-1 bg-border/60" aria-hidden="true" />
+                </div>
+              </div>
+
               <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 <label className="flex flex-col gap-2">
                   <span className="text-[11px] font-bold uppercase tracking-widest text-text-secondary">E-mail</span>
@@ -297,7 +368,7 @@ export default function AuthPage() {
 
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || isGoogleLoading}
                   className="landing-button landing-button--primary mt-2 w-full text-sm disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isLoading ? (
@@ -345,20 +416,14 @@ export default function AuthPage() {
   );
 }
 
-function parsePlan(plan: string | null): BillingPlanCode | null {
-  if (plan === "free" || plan === "pro" || plan === "founding") {
-    return plan;
-  }
-  return null;
-}
-
 function buildBillingReturnUrl() {
   return `${window.location.origin}/workspace/settings/billing`;
 }
 
-async function persistPlanIntent(
+async function persistPlanIntentForLanding(
   supabase: ReturnType<typeof createClient>,
   selectedPlan: BillingPlanCode,
+  target: "workspace" | "download",
   userId?: string | null,
 ) {
   const resolvedUserId = userId ?? (await supabase.auth.getUser()).data.user?.id ?? null;
@@ -367,26 +432,10 @@ async function persistPlanIntent(
     return;
   }
 
-  const { error } = await supabase.from("plan_intents").insert({
-    user_id: resolvedUserId,
-    selected_plan: selectedPlan,
+  await persistPlanIntentRecord(supabase, {
+    userId: resolvedUserId,
+    selectedPlan,
     source: "landing_page",
-    platform_interest: "windows",
-    status: "interested",
+    platformInterest: target === "download" ? "windows" : "web",
   });
-
-  if (error && !error.message.includes("Could not find the table") && error.code !== "42P01") {
-    throw new Error(error.message);
-  }
-}
-
-function getAuthErrorMessage(error: Error | { message?: string } | unknown) {
-  const message = error instanceof Error ? error.message : typeof error === "object" && error && "message" in error ? String(error.message) : "";
-
-  if (message.includes("Invalid login credentials")) return "Credenciais incorretas (E-mail ou Senha).";
-  if (message.includes("User already registered")) return "Este e-mail ja esta sendo utilizado.";
-  if (message.includes("Password should be at least")) return "A senha deve ter no minimo 6 caracteres.";
-  if (message.includes("rate limit")) return "Muitas tentativas em pouco tempo. Aguarde um momento.";
-  if (message.includes("Email not confirmed")) return "Verifique sua caixa de e-mail para validar a conta antes de entrar.";
-  return "Falha de comunicacao com os servidores. Verifique sua conexao e tente novamente.";
 }

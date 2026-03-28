@@ -1,6 +1,7 @@
 "use client";
 
 import { login, savePlanIntent, signup } from "@/app/actions/auth";
+import { GoogleAuthButton } from "@/app/components/auth/google-auth-button";
 import {
   ActionButton,
   FeedbackMessage,
@@ -10,6 +11,8 @@ import {
   Surface,
 } from "@/app/components/ui/system-primitives";
 import { usePlanIntent } from "@/store/plan-intent-store";
+import { buildGoogleCallbackUrl, getAuthErrorMessage } from "@/utils/auth/oauth";
+import { createClient, hasSupabaseClientEnv } from "@/utils/supabase/client";
 import { ArrowRight, Loader2, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -27,6 +30,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const { selectedPlan, clearIntent } = usePlanIntent();
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   if (!isOpen) return null;
@@ -62,6 +66,47 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
       setErrorMsg("Ocorreu um erro inesperado. Tente novamente.");
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function handleGoogleAuth() {
+    setIsGoogleLoading(true);
+    setErrorMsg("");
+
+    if (!hasSupabaseClientEnv()) {
+      setErrorMsg("O login com Google ainda nao esta habilitado neste ambiente do CodeTrail.");
+      setIsGoogleLoading(false);
+      return;
+    }
+
+    const supabase = createClient();
+
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: buildGoogleCallbackUrl({
+            origin: window.location.origin,
+            plan: selectedPlan ?? null,
+            target: "download",
+            source: "modal",
+          }),
+          queryParams: {
+            prompt: "select_account",
+          },
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data.url) {
+        throw new Error("Nao foi possivel iniciar o login com Google.");
+      }
+    } catch (error) {
+      setErrorMsg(getAuthErrorMessage(error));
+      setIsGoogleLoading(false);
     }
   }
 
@@ -110,6 +155,20 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
         ) : null}
 
         <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-5">
+          <GoogleAuthButton
+            label={isLogin ? "Entrar com Google" : "Criar conta com Google"}
+            loading={isGoogleLoading}
+            onClick={handleGoogleAuth}
+          />
+
+          <div className="flex items-center gap-3">
+            <span className="h-px flex-1 bg-border/60" aria-hidden="true" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-text-secondary">
+              ou continue com e-mail
+            </span>
+            <span className="h-px flex-1 bg-border/60" aria-hidden="true" />
+          </div>
+
           <FormField label="E-mail">
             <input
               name="email"
@@ -131,7 +190,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
             />
           </FormField>
 
-          <ActionButton type="submit" disabled={isLoading} className="mt-2 w-full">
+          <ActionButton type="submit" disabled={isLoading || isGoogleLoading} className="mt-2 w-full">
             {isLoading ? (
               <>
                 <Loader2 size={16} className="animate-spin" />

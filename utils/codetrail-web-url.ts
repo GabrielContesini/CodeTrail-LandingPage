@@ -13,7 +13,15 @@ export function buildCodeTrailWebEntryHref({
   target?: EntryTarget;
 }) {
   if (plan) {
-    return buildCodeTrailWebAuthHref({ originHint, plan, target });
+    return buildCodeTrailWebAuthHref({
+      originHint,
+      plan,
+      target,
+      returnTo:
+        plan === "pro" || plan === "founding"
+          ? buildLandingReturnUrl(originHint)
+          : undefined,
+    });
   }
 
   return buildUrl(target === "download" ? "/download/windows" : "/auth", originHint);
@@ -23,16 +31,19 @@ export function buildCodeTrailWebAuthHref({
   originHint,
   plan,
   target = "workspace",
+  returnTo,
 }: {
   originHint?: string;
   plan?: BillingPlanCode | null;
   target?: EntryTarget;
+  returnTo?: string;
 }) {
   return buildUrlWithParams(
     "/auth",
     {
       ...(plan ? { plan } : {}),
       ...(target !== "workspace" ? { target } : {}),
+      ...(returnTo ? { returnTo } : {}),
     },
     originHint,
   );
@@ -67,7 +78,7 @@ export function getRequestOriginHint(headersLike: Pick<Headers, "get">) {
 function resolveCodeTrailWebOrigin(originHint?: string) {
   const configuredOrigin = normalizeOrigin(
     process.env.NEXT_PUBLIC_CODETRAIL_WEB_URL,
-  );
+  ) ?? "https://www.codetrail.online";
 
   if (configuredOrigin) {
     return configuredOrigin;
@@ -102,6 +113,15 @@ function inferOriginFromHint(originHint: string) {
   }
 
   return null;
+}
+
+function buildLandingReturnUrl(originHint?: string) {
+  const normalizedOrigin = normalizeOrigin(originHint);
+  if (!normalizedOrigin) {
+    return undefined;
+  }
+
+  return new URL("/", normalizedOrigin).toString();
 }
 
 function isLocalHost(hostname: string) {
