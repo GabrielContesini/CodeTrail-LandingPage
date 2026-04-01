@@ -16,12 +16,17 @@
   --success: #35d39a;
   --warning: #ffbf69;
   --focus-ring: 0 0 0 1px rgba(4, 9, 15, 0.94), 0 0 0 4px rgba(50, 208, 255, 0.3);
-  --cursor-default: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2332d0ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v4'/%3E%3Cpath d='M12 18v4'/%3E%3Cpath d='M4 12H2'/%3E%3Cpath d='M22 12h-2'/%3E%3C/svg%3E")
-    12 12,
-    auto;
-  --cursor-action: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2332d0ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='2' fill='%2332d0ff'/%3E%3Ccircle cx='12' cy='12' r='8' stroke-dasharray='4 4'/%3E%3C/svg%3E")
-    12 12,
-    pointer;
+}
+
+@supports (cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%2332d0ff' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v4'/%3E%3Cpath d='M12 18v4'/%3E%3Cpath d='M4 12H2'/%3E%3Cpath d='M22 12h-2'/%3E%3C/svg%3E") 12 12, auto) {
+  :root {
+    --cursor-default: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%2332d0ff' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v4'/%3E%3Cpath d='M12 18v4'/%3E%3Cpath d='M4 12H2'/%3E%3Cpath d='M22 12h-2'/%3E%3C/svg%3E")
+      12 12,
+      auto;
+    --cursor-action: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%2332d0ff' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='2' fill='%2332d0ff'/%3E%3Ccircle cx='12' cy='12' r='8' stroke-dasharray='4 4'/%3E%3C/svg%3E")
+      12 12,
+      pointer;
+  }
 }
 
 @theme inline {
