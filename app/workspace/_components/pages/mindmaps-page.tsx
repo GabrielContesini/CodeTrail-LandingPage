@@ -168,7 +168,7 @@ export function MindMapsPage() {
     <>
       <PageFrame
         title="Mind Maps"
-        subtitle="Canvas visual para conectar conceitos, módulos e projetos no mesmo backend do Windows."
+        subtitle="Canvas visual para conectar conceitos, módulos e projetos no mesmo fluxo do workspace."
         actions={
           <PrimaryButton
             onClick={() => {

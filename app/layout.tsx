@@ -23,7 +23,7 @@ const uiFont = Manrope({
 export const metadata: Metadata = {
   title: "CodeTrail | Sistema de estudo para carreiras em tecnologia",
   description:
-    "Planejamento de estudos em tecnologia com trilhas, sessoes, revisoes, projetos e uma versao Windows pronta para download.",
+    "Planejamento de estudos em tecnologia com trilhas, sessoes, revisoes, projetos e uma experiencia web premium para executar sua rotina.",
   icons: {
     icon: [
       { url: "/favicon.ico" },

@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Globe, ShieldCheck, Sparkles, ArrowRight } from "lucide-react";
+import { Globe, ShieldCheck, Sparkles, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { AuthTrigger } from "./auth-trigger";
 import { DepthCard } from "./depth-card";
@@ -79,17 +79,6 @@ export function LandingHero({
                 <ArrowRight size={16} />
               </AuthTrigger>
             </motion.span>
-            <motion.span
-              className="inline-flex"
-              whileHover={reduced ? undefined : { y: -2 }}
-              whileTap={reduced ? undefined : { scale: 0.98 }}
-              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <AuthTrigger target="download" className="landing-button landing-button--secondary px-7 py-4 text-sm">
-                <Download size={16} />
-                Baixar Windows
-              </AuthTrigger>
-            </motion.span>
           </motion.div>
 
           <motion.div variants={heroItem} className="relative">
@@ -123,7 +112,7 @@ export function LandingHero({
                     <div className="flex flex-wrap items-center gap-4 text-[11px] font-bold uppercase tracking-[0.14em] text-text-secondary">
                       <span className="inline-flex items-center gap-2">
                         <Globe size={14} className="text-primary/80" />
-                        Web + Windows
+                        Fluxo web único
                       </span>
                       <span className="inline-flex items-center gap-2">
                         <ShieldCheck size={14} className="text-accent/80" />

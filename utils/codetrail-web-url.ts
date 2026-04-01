@@ -6,17 +6,17 @@ type SearchParamValue = string | string[] | undefined;
 export function buildCodeTrailWebEntryHref({
   originHint,
   plan,
-  target = "workspace",
+  target,
 }: {
   originHint?: string;
   plan?: BillingPlanCode;
   target?: EntryTarget;
 }) {
+  void target;
   if (plan) {
     return buildCodeTrailWebAuthHref({
       originHint,
       plan,
-      target,
       returnTo:
         plan === "pro" || plan === "founding"
           ? buildLandingReturnUrl(originHint)
@@ -24,13 +24,13 @@ export function buildCodeTrailWebEntryHref({
     });
   }
 
-  return buildUrl(target === "download" ? "/download/windows" : "/auth", originHint);
+  return buildUrl("/auth", originHint);
 }
 
 export function buildCodeTrailWebAuthHref({
   originHint,
   plan,
-  target = "workspace",
+  target,
   returnTo,
 }: {
   originHint?: string;
@@ -38,11 +38,11 @@ export function buildCodeTrailWebAuthHref({
   target?: EntryTarget;
   returnTo?: string;
 }) {
+  void target;
   return buildUrlWithParams(
     "/auth",
     {
       ...(plan ? { plan } : {}),
-      ...(target !== "workspace" ? { target } : {}),
       ...(returnTo ? { returnTo } : {}),
     },
     originHint,

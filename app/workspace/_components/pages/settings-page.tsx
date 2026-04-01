@@ -98,7 +98,7 @@ export function SettingsPage() {
               <div className="workspace-inline-banner">
                 <div>
                   <strong>Supabase conectado</strong>
-                  <p>As alterações da web escrevem nas mesmas tabelas usadas pelo Windows.</p>
+                  <p>As alterações da web escrevem nas mesmas tabelas que sustentam seu workspace.</p>
                 </div>
                 <Pill tone="success">Online</Pill>
               </div>
@@ -134,7 +134,7 @@ export function SettingsPage() {
                 </SecondaryButton>
               </div>
             </DataCard>
-            <DataCard title="Plano atual" subtitle="Billing compartilhado com o desktop.">
+            <DataCard title="Plano atual" subtitle="Billing compartilhado com a operação atual do CodeTrail.">
               <div className="workspace-inline-banner">
                 <div>
                   <strong>Plano {planCode(data!.billing).toUpperCase()}</strong>

@@ -2,7 +2,6 @@ import {
   Activity,
   ArrowRight,
   Check,
-  Download,
   FolderKanban,
   Globe,
   Layers3,
@@ -34,9 +33,9 @@ const proofMetrics = [
     detail: "Login, billing, progresso e continuidade no mesmo ecossistema.",
   },
   {
-    value: "Web + Windows",
-    label: "mesma operação",
-    detail: "Sem quebrar a rotina entre ambientes ou abrir vários fluxos paralelos.",
+    value: "100%",
+    label: "experiência web",
+    detail: "Toda a jornada acontece no navegador, com onboarding, billing e continuidade no mesmo fluxo.",
   },
 ];
 
@@ -136,9 +135,9 @@ const faqItems = [
       "Sim. Você pode entrar no Free agora e subir para Pro mensal ou Founding anual quando quiser.",
   },
   {
-    question: "A versão web e a versão Windows usam a mesma conta?",
+    question: "Preciso instalar alguma versão desktop para usar o CodeTrail?",
     answer:
-      "Sim. O backend, a autenticação e o billing são compartilhados entre as versões.",
+      "Não. O CodeTrail agora opera como experiência web única, com conta, billing e progresso centralizados no navegador.",
   },
   {
     question: "A assinatura continua dentro do produto?",
@@ -359,10 +358,6 @@ export default function Home() {
                   Abrir Web
                   <ArrowRight size={16} />
                 </AuthTrigger>
-                <AuthTrigger target="download" className="landing-button landing-button--secondary w-full px-7 py-4 text-sm sm:w-auto">
-                  <Download size={16} />
-                  Windows
-                </AuthTrigger>
               </div>
             </div>
           </DepthCard>
@@ -375,7 +370,7 @@ export default function Home() {
             </div>
             <div className="flex flex-col">
               <strong className="text-sm font-display tracking-tight leading-none text-text-secondary">CodeTrail</strong>
-              <span className="mt-1 text-[8px] uppercase tracking-[0.22em] text-text-secondary/60">Web + Windows</span>
+              <span className="mt-1 text-[8px] uppercase tracking-[0.22em] text-text-secondary/60">Web app</span>
             </div>
           </a>
 

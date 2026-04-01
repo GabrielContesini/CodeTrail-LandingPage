@@ -1,6 +1,5 @@
 "use client";
 
-import { Download } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { AuthTrigger } from "./auth-trigger";
@@ -54,12 +53,8 @@ export function LandingNav() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <AuthTrigger target="download" className="landing-button landing-button--secondary hidden px-4 py-2 text-[11px] sm:inline-flex">
-            <Download size={14} />
-            Windows
-          </AuthTrigger>
           <AuthTrigger target="workspace" className="landing-button landing-button--primary px-4 py-2 text-[11px] sm:px-5">
-            Entrar Web
+            Entrar no sistema
           </AuthTrigger>
         </div>
       </div>

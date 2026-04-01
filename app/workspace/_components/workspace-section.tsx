@@ -24,7 +24,7 @@ export function WorkspaceSection({ section }: { section: WorkspaceSectionKey }) 
     return (
       <PageFrame
         title="Carregando workspace"
-        subtitle="Sincronizando o app web com o mesmo backend do Windows."
+        subtitle="Sincronizando o app web com a mesma base de dados do workspace."
       >
         <div className="workspace-loading">
           <LoaderCircle className="animate-spin" size={28} />

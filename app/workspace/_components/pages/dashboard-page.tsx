@@ -56,7 +56,7 @@ export function DashboardPage() {
         <div className="workspace-split workspace-split--hero">
           <DataCard
             title="Comando do dia"
-            subtitle="A versão web replica o backend do desktop e mantém o foco em intenção, execução e retenção."
+            subtitle="Organize intenção, execução e retenção no mesmo fluxo operacional do seu workspace."
             accent="primary"
           >
             <div className="workspace-stack">
@@ -124,7 +124,7 @@ export function DashboardPage() {
 
         <DataCard
           title="Plano e sincronização"
-          subtitle="A web usa as mesmas conexões do Windows: Supabase, billing por Stripe e dados por usuário."
+          subtitle="Assinatura, autenticação e dados pessoais sincronizados na mesma operação do CodeTrail."
         >
           <div className="workspace-inline-banner">
             <div>

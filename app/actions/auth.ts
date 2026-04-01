@@ -44,7 +44,7 @@ export async function loginAndContinue(
  formData: FormData,
  options?: {
   selectedPlan?: string | null
-  target?: "workspace" | "download"
+  target?: "workspace"
  }
 ) {
  let supabase: Awaited<ReturnType<typeof createClient>>;
@@ -68,8 +68,6 @@ export async function loginAndContinue(
  }
 
  const selectedPlan = parsePlanCode(options?.selectedPlan ?? null);
- const target = options?.target === "download" ? "download" : "workspace";
-
  if (selectedPlan) {
   const intentResult = await persistPlanIntent(supabase, selectedPlan);
   if (intentResult?.error) {
@@ -99,14 +97,14 @@ export async function loginAndContinue(
    redirect(checkout.managementUrl);
   }
 
-  redirect(target === "download" ? "/download/windows" : "/workspace/settings/billing");
+  redirect("/workspace/settings/billing");
  }
 
  if (selectedPlan === "free") {
-  redirect(target === "download" ? "/download/windows" : "/workspace/dashboard");
+  redirect("/workspace/dashboard");
  }
 
- redirect(target === "download" ? "/download/windows" : "/workspace/dashboard");
+ redirect("/workspace/dashboard");
 }
 
 export async function signup(formData: FormData) {
@@ -161,12 +159,12 @@ async function persistPlanIntent(supabase: Awaited<ReturnType<typeof createClien
  if (selectedPlan && ["free", "pro", "founding"].includes(selectedPlan)) {
   const { error } = await supabase
    .from("plan_intents")
-   .insert({
-    user_id: user.id,
-    selected_plan: selectedPlan,
-    source: "landing_page",
-    platform_interest: "windows",
-    status: "interested",
+    .insert({
+     user_id: user.id,
+     selected_plan: selectedPlan,
+     source: "landing_page",
+     platform_interest: "web",
+     status: "interested",
    });
 
   if (error) {

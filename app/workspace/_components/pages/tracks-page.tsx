@@ -19,7 +19,7 @@ export function TracksPage() {
   return (
     <PageFrame
       title="Trilhas"
-      subtitle="Roadmaps, skills e módulos para orientar sua evolução com o mesmo catálogo do desktop."
+      subtitle="Roadmaps, skills e módulos para orientar sua evolução com o catálogo ativo do CodeTrail."
     >
       {data!.trackBlueprints.length ? (
         <div className="workspace-split">

@@ -3,7 +3,8 @@ import type { BillingPlanCode } from "@/utils/workspace/types";
 export type AuthFlowTarget = "workspace" | "download";
 
 export function parseAuthFlowTarget(value: string | null | undefined): AuthFlowTarget {
-  return value === "download" ? "download" : "workspace";
+  void value;
+  return "workspace";
 }
 
 export function parseAuthPlan(value: string | null | undefined): BillingPlanCode | null {
@@ -22,10 +23,6 @@ export function buildGoogleCallbackUrl(options: {
     url.searchParams.set("plan", options.plan);
   }
 
-  if (options.target !== "workspace") {
-    url.searchParams.set("target", options.target);
-  }
-
   if (options.source) {
     url.searchParams.set("source", options.source);
   }
@@ -42,10 +39,6 @@ export function buildAuthErrorRedirect(options: {
 
   if (options.plan) {
     params.set("plan", options.plan);
-  }
-
-  if (options.target !== "workspace") {
-    params.set("target", options.target);
   }
 
   params.set("auth_error", options.message);

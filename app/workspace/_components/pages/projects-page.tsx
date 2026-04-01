@@ -55,7 +55,7 @@ export function ProjectsPage() {
     <>
       <PageFrame
         title="Projetos"
-        subtitle="Portfólio prático com etapas, links e ritmo de entrega, igual ao ecossistema do desktop."
+        subtitle="Portfólio prático com etapas, links e ritmo de entrega dentro do mesmo ecossistema do workspace."
         actions={
           <PrimaryButton
             onClick={() => {

@@ -55,7 +55,7 @@ export function FlashcardsPage() {
     <>
       <PageFrame
         title="Flashcards"
-        subtitle="Revisão ativa com decks, fila do dia e repetição espaçada baseada no mesmo algoritmo do Windows."
+        subtitle="Revisão ativa com decks, fila do dia e repetição espaçada integrada ao mesmo fluxo de retenção."
         actions={
           <PrimaryButton
             onClick={() => {

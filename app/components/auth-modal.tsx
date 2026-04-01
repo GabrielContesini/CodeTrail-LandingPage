@@ -59,7 +59,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
         clearIntent();
       }
 
-      router.push("/download/windows");
+      router.push("/workspace/dashboard");
       onClose();
     } catch (error) {
       console.error(error);
@@ -88,7 +88,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
           redirectTo: buildGoogleCallbackUrl({
             origin: window.location.origin,
             plan: selectedPlan ?? null,
-            target: "download",
+            target: "workspace",
             source: "modal",
           }),
           queryParams: {

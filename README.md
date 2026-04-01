@@ -1,6 +1,6 @@
 # CodeTrail Landing Page
 
-Landing page oficial do CodeTrail, separada do app mobile, da versao Windows e do Command Center.
+Landing page oficial do CodeTrail, separada do app mobile e focada em aquisicao para a experiencia web.
 
 ## Stack
 
@@ -14,7 +14,6 @@ Landing page oficial do CodeTrail, separada do app mobile, da versao Windows e d
 - hero de conversao para atrair usuarios
 - narrativa do produto
 - secoes de funcionalidades
-- destaque para download da versao Windows
 - destaque para divulgacao da versao mobile
 - roadmap em timeline
 - CTA final pronto para publicacao
@@ -45,7 +44,7 @@ npm run build
 
 ## Links usados na landing
 
-- Windows: download direto via rota interna `/download/windows`
+- Web: `https://codetrail.online/auth`
 - Mobile: `https://github.com/GabrielContesini/CodeTrail`
 
 Se depois voce quiser, o proximo passo natural e adicionar analytics, waitlist ou newsletter.

@@ -42,7 +42,7 @@ export function TasksPage() {
     <>
       <PageFrame
         title="Tarefas"
-        subtitle="Planejamento, execução e prioridade no mesmo fluxo visual do desktop."
+        subtitle="Planejamento, execução e prioridade no mesmo fluxo visual do workspace."
         actions={
           <PrimaryButton
             onClick={() => {

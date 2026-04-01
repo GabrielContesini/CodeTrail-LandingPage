@@ -18,7 +18,7 @@ export function AnalyticsPage() {
   return (
     <PageFrame
       title="Análises"
-      subtitle="Consistência, volume e evolução da trilha em números, usando os mesmos dados do workspace desktop."
+      subtitle="Consistência, volume e evolução da trilha em números, usando os mesmos dados ativos do workspace."
     >
       <SectionGrid columns={4}>
         <MetricCard

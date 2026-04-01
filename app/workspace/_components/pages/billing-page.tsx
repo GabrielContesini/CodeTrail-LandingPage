@@ -20,7 +20,7 @@ export function BillingPage() {
   return (
     <PageFrame
       title="Plano e cobrança"
-      subtitle="Assinatura, trial e recursos premium conectados ao mesmo backend Stripe do app Windows."
+      subtitle="Assinatura, trial e recursos premium conectados ao billing oficial do seu workspace."
       actions={
         <>
           <SecondaryButton onClick={() => void refreshBilling()}>
@@ -71,7 +71,7 @@ export function BillingPage() {
               <p>
                 {billing.subscription?.current_period_end
                   ? `Período atual até ${formatDateTime(billing.subscription.current_period_end)}`
-                  : "Faça upgrade para liberar recursos premium na web e no Windows."}
+                  : "Faça upgrade para liberar recursos premium em toda a experiência do CodeTrail."}
               </p>
             </div>
             <div className="workspace-inline-actions">
@@ -87,7 +87,7 @@ export function BillingPage() {
           </div>
         </DataCard>
 
-        <DataCard title="Planos disponíveis" subtitle="Mesmo catálogo de billing do desktop.">
+        <DataCard title="Planos disponíveis" subtitle="Mesmo catálogo de billing ativo do CodeTrail.">
           <SectionGrid columns={3}>
             {billing.available_plans.map((plan) => (
               <DataCard

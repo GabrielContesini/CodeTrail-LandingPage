@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
         userId: user.id,
         selectedPlan: plan,
         source: "google_oauth",
-        platformInterest: target === "download" ? "windows" : "web",
+        platformInterest: "web",
       });
     } catch {
       // Mantem o fluxo principal mesmo se o registro do interesse falhar.
@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
       const redirectUrl =
         checkout.checkoutUrl ??
         checkout.managementUrl ??
-        (target === "download" ? "/download/windows" : "/workspace/settings/billing");
+        "/workspace/settings/billing";
 
       return NextResponse.redirect(new URL(redirectUrl, request.url), 303);
     } catch (error) {
@@ -103,6 +103,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  const destination = target === "download" ? "/download/windows" : "/workspace/dashboard";
+  const destination = "/workspace/dashboard";
   return NextResponse.redirect(new URL(destination, request.url), 303);
 }

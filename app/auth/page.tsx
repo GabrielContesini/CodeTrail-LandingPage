@@ -5,7 +5,6 @@ import { usePlanIntent } from "@/store/plan-intent-store";
 import {
   buildGoogleCallbackUrl,
   getAuthErrorMessage,
-  parseAuthFlowTarget,
   parseAuthPlan,
 } from "@/utils/auth/oauth";
 import { persistPlanIntent as persistPlanIntentRecord } from "@/utils/auth/plan-intent";
@@ -61,7 +60,6 @@ export default function AuthPage() {
   const { selectedPlan, clearIntent } = usePlanIntent();
   const router = useRouter();
   const [queryPlan, setQueryPlan] = useState<BillingPlanCode | null>(null);
-  const [target, setTarget] = useState<"workspace" | "download">("workspace");
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -75,7 +73,6 @@ export default function AuthPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setQueryPlan(parseAuthPlan(params.get("plan")));
-    setTarget(parseAuthFlowTarget(params.get("target")));
     setErrorMsg(params.get("auth_error") ?? params.get("billing_error") ?? "");
   }, []);
 
@@ -107,7 +104,6 @@ export default function AuthPage() {
           await persistPlanIntentForLanding(
             supabase,
             activePlan,
-            target,
             data.user?.id ?? null,
           );
         }
@@ -134,13 +130,7 @@ export default function AuthPage() {
 
         clearIntent();
 
-        if (activePlan === "free") {
-          router.push(target === "download" ? "/download/windows" : "/workspace/dashboard");
-          router.refresh();
-          return;
-        }
-
-        router.push(target === "download" ? "/download/windows" : "/workspace/dashboard");
+        router.push("/workspace/dashboard");
         router.refresh();
         setIsLoading(false);
         return;
@@ -197,7 +187,7 @@ export default function AuthPage() {
           redirectTo: buildGoogleCallbackUrl({
             origin: window.location.origin,
             plan: activePlan,
-            target,
+            target: "workspace",
             source: "page",
           }),
           queryParams: {
@@ -423,7 +413,6 @@ function buildBillingReturnUrl() {
 async function persistPlanIntentForLanding(
   supabase: ReturnType<typeof createClient>,
   selectedPlan: BillingPlanCode,
-  target: "workspace" | "download",
   userId?: string | null,
 ) {
   const resolvedUserId = userId ?? (await supabase.auth.getUser()).data.user?.id ?? null;
@@ -436,6 +425,6 @@ async function persistPlanIntentForLanding(
     userId: resolvedUserId,
     selectedPlan,
     source: "landing_page",
-    platformInterest: target === "download" ? "windows" : "web",
+    platformInterest: "web",
   });
 }

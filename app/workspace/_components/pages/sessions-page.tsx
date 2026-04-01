@@ -44,7 +44,7 @@ export function SessionsPage() {
     <>
       <PageFrame
         title="Sessões"
-        subtitle="Cronômetro, histórico e blocos de foco com contexto real, usando as mesmas tabelas do desktop."
+        subtitle="Cronômetro, histórico e blocos de foco com contexto real, usando a mesma base do seu workspace."
         actions={
           <PrimaryButton
             onClick={() => {
